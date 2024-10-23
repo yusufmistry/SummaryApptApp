@@ -11,7 +11,7 @@ function GetPatientList() {
     const UserIDObj = { userid: UserID };
 
     axios
-      .post("http://localhost:5000/patientlist", UserIDObj)
+      .post("https://summaryapptapp.onrender.com/patientlist", UserIDObj)
       .then((response) => {
         const PatientList = response.data;
 
@@ -186,7 +186,7 @@ function SaveToDB() {
   UserInputsObj["PatientID"] = document.getElementById("PatientID").value;
 
   axios
-    .post("http://localhost:5000/", UserInputsObj)
+    .post("https://summaryapptapp.onrender.com/", UserInputsObj)
     .then((res) => {
       SuccessToastMsg = document.getElementById("SuccessToastMsg").innerText =
         res.data;
@@ -231,7 +231,7 @@ function DeletePatient(id, name) {
   }
 
   axios
-    .post("http://localhost:5000/deletepatient", { id })
+    .post("https://summaryapptapp.onrender.com/deletepatient", { id })
     .then((res) => {
       DeleteSuccessToastMsg = document.getElementById(
         "DeleteSuccessToastMsg"
@@ -258,7 +258,7 @@ function Register() {
     };
 
     axios
-      .post("http://localhost:5000/register", UserObj)
+      .post("https://summaryapptapp.onrender.com/register", UserObj)
       .then((response) => {
         if (response.data === "Already registered") {
           UserAlreadyRegisMsg = document.getElementById(
@@ -341,7 +341,7 @@ function Login() {
     const LoginObj = { MobileNo: LoginMobileNo };
 
     axios
-      .post("http://localhost:5000/userlogin", LoginObj)
+      .post("https://summaryapptapp.onrender.com/userlogin", LoginObj)
       .then((response) => {
         if (response.data === "Not found") {
           LoginFailMsg = document.getElementById(
