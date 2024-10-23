@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Summary Maker App</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <!-- Tagify -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
+    <!-- Override CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body
+    data-bs-spy="scroll"
+    data-bs-target="#offcanvasNavbarLight"
+    data-bs-smooth-scroll="true"
+  >
+    <!---------------------------------------------- Background Div ------------------------------------------>
+    <div class="video-background" id="video-background">
+      <!-- Video -->
+      <video autoplay muted loop>
+        <source type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Semi-transparent Overlay -->
+      <div class="overlay"></div>
+    </div>
+
+    <!----------------------------------------------  Header Navbar ------------------------------------------->
+    <nav class="navbar bg-body-tertiary sticky-top mb-1">
+      <div class="container-fluid">
+        <!-- Title, MyPateint Btn, Offcanvas Toggler -->
+        <div class="col-sm-12">
+          <div class="row gx-1 gy-2">
+            <!-- A. Summary Maker App Title -->
+            <div class="col-6">
+              <a class="navbar-brand p-0 m-0" href="#">Summary Maker App </a>
+              <span
+                class="bg-warning-subtle"
+                style="font-size: 0.7rem"
+                id="LoginStatus"
+                ><i>(Not Logged in - Demo User)</i></span
+              >
+            </div>
+
+            <!-- B. Patient List Retriver Button -->
+            <div class="col-4">
+              <div class="d-grid col-12 mx-auto">
+                <button
+                  type="button"
+                  class="col btn btn-primary"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#PatientList"
+                  onclick="GetPatientList()"
+                >
+                  My Patients
+                </button>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <!-- C. Offcanvas Toggler Btn  -->
+              <button
+                class="navbar-toggler"
+                style="float: right"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbarLight"
+                onclick="RefreshSpyScroll()"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- D. Offcanvas -->
+          <div
+            class="offcanvas offcanvas-end"
+            tabindex="-1"
+            id="offcanvasNavbarLight"
+            data-bs-scroll="true"
+            style="max-width: 50vw"
+          >
+            <!-- Offcanvas Header -->
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasTitle">
+                Welcome Demo User
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
+            </div>
+            <!-- Offcanvas Body -->
+            <div class="offcanvas-body">
+              <!-- Login Div -->
+              <div
+                id="loginlogout"
+                class="row d-flex d-flex justify-content-center align-items-center"
+              >
+                <form id="LoginForm">
+                  <!--  Mobile No. Input-->
+                  <div class="col-12 mb-2">
+                    <div class="form-group">
+                      <label for="LoginMobileNo"><b>Mobile No: </b></label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="LoginMobileNo"
+                        placeholder="10-digit Mobile No."
+                        pattern="[789][0-9]{9}"
+                        required
+                      />
+                      <div class="invalid-feedback">
+                        This does not look like a valid 10-digit Mobile Number
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Login Btn  -->
+                  <div class="d-grid col-10 mx-auto">
+                    <button
+                      type="button"
+                      id="LoginUserBtn"
+                      class="btn btn-primary"
+                      onclick="Login()"
+                    >
+                      Login
+                    </button>
+                  </div>
+
+                  <!--  Please login text -->
+                  <div class="col-12">
+                    <div class="form-text" style="font-size: small">
+                      <i>Please Login to save and retrieve patients</i>
+                    </div>
+                  </div>
+
+                  <!-- Register Link -->
+                  <div class="col-sm-12">
+                    <div class="form-text text-end">
+                      New User?
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link p-0"
+                        data-bs-toggle="modal"
+                        data-bs-target="#RegisterModal"
+                      >
+                        Register
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Offcanvas Nav Links -->
+              <ul class="nav nav-pills flex-column mb-auto">
+                <!-- 1 Primary Info -->
+                <li class="nav-item">
+                  <a href="#PrimaryInfoHeading" class="nav-link active"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      fill="currentColor"
+                      class="bi bi-house-door"
+                    >
+                      <path
+                        d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z"
+                      />
+                    </svg>
+                    Primary Info
+                  </a>
+                </li>
+                <!-- 2 First Visit -->
+                <li class="nav-item">
+                  <a class="nav-link" href="#FirstVisitHeading"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      fill="currentColor"
+                      class="bi bi-1-square"
+                    >
+                      <path
+                        d="M9.283 4.002V12H7.971V5.338h-.065L6.072 6.656V5.385l1.899-1.383z"
+                      />
+                      <path
+                        d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"
+                      />
+                    </svg>
+                    First Visit
+                  </a>
+                </li>
+                <!-- 3 HOPI & Investigation -->
+                <li class="nav-item">
+                  <a class="nav-link" href="#HOPIandInvHeading"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      fill="currentColor"
+                      class="bi bi-file-earmark-medical"
+                    >
+                      <path
+                        d="M7.5 5.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L6 7l-.549.317a.5.5 0 1 0 .5.866l.549-.317V8.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L8 7l.549-.317a.5.5 0 1 0-.5-.866l-.549.317zm-2 4.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"
+                      />
+                      <path
+                        d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"
+                      />
+                    </svg>
+                    HOPI & Investgations
+                  </a>
+                </li>
+                <!--  Treatment -->
+                <li class="nav-item dropdown">
+                  <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      fill="currentColor"
+                      class="bi bi-prescription"
+                    >
+                      <path
+                        d="M5.5 6a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0V9h.293l2 2-1.147 1.146a.5.5 0 0 0 .708.708L9 11.707l1.146 1.147a.5.5 0 0 0 .708-.708L9.707 11l1.147-1.146a.5.5 0 0 0-.708-.708L9 10.293 7.695 8.987A1.5 1.5 0 0 0 7.5 6zM6 7h1.5a.5.5 0 0 1 0 1H6z"
+                      />
+                      <path
+                        d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v10.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 14.5V4a1 1 0 0 1-1-1zm2 3v10.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V4zM3 3h10V1H3z"
+                      />
+                    </svg>
+                    Treatment
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="#PrimaryHeading"
+                        ><svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="21"
+                          height="21"
+                          fill="currentColor"
+                          class="bi bi-crosshair"
+                        >
+                          <path
+                            d="M8.5.5a.5.5 0 0 0-1 0v.518A7 7 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7 7 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7 7 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7 7 0 0 0 8.5 1.018zm-6.48 7A6 6 0 0 1 7.5 2.02v.48a.5.5 0 0 0 1 0v-.48a6 6 0 0 1 5.48 5.48h-.48a.5.5 0 0 0 0 1h.48a6 6 0 0 1-5.48 5.48v-.48a.5.5 0 0 0-1 0v.48A6 6 0 0 1 2.02 8.5h.48a.5.5 0 0 0 0-1zM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"
+                          />
+                        </svg>
+                        Primary
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#NeckHeading"
+                        ><svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="21"
+                          height="21"
+                          fill="currentColor"
+                          class="bi bi-cookie"
+                        >
+                          <path
+                            d="M6 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m4.5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                          />
+                          <path
+                            d="M8 0a7.96 7.96 0 0 0-4.075 1.114q-.245.102-.437.28A8 8 0 1 0 8 0m3.25 14.201a1.5 1.5 0 0 0-2.13.71A7 7 0 0 1 8 15a6.97 6.97 0 0 1-3.845-1.15 1.5 1.5 0 1 0-2.005-2.005A6.97 6.97 0 0 1 1 8c0-1.953.8-3.719 2.09-4.989a1.5 1.5 0 1 0 2.469-1.574A7 7 0 0 1 8 1c1.42 0 2.742.423 3.845 1.15a1.5 1.5 0 1 0 2.005 2.005A6.97 6.97 0 0 1 15 8c0 .596-.074 1.174-.214 1.727a1.5 1.5 0 1 0-1.025 2.25 7 7 0 0 1-2.51 2.224Z"
+                          />
+                        </svg>
+                        Neck
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#ReconHeading"
+                        ><svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="21"
+                          height="21"
+                          fill="currentColor"
+                          class="bi bi-wrench-adjustable-circle"
+                        >
+                          <path
+                            d="M12.496 8a4.5 4.5 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11q.04.3.04.61"
+                          />
+                          <path
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.5 4.5 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8m-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27z"
+                          />
+                        </svg>
+                        Recon
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!--  Histopath -->
+                <li class="nav-item">
+                  <a class="nav-link" href="#HistopathRow"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      fill="currentColor"
+                      class="bi bi-bricks"
+                    >
+                      <path
+                        d="M0 .5A.5.5 0 0 1 .5 0h15a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H14v2h1.5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H14v2h1.5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5H2v-2H.5a.5.5 0 0 1-.5-.5v-3A.5.5 0 0 1 .5 6H2V4H.5a.5.5 0 0 1-.5-.5zM3 4v2h4.5V4zm5.5 0v2H13V4zM3 10v2h4.5v-2zm5.5 0v2H13v-2zM1 1v2h3.5V1zm4.5 0v2h5V1zm6 0v2H15V1zM1 7v2h3.5V7zm4.5 0v2h5V7zm6 0v2H15V7zM1 13v2h3.5v-2zm4.5 0v2h5v-2zm6 0v2H15v-2z"
+                      />
+                    </svg>
+                    Histopath
+                  </a>
+                </li>
+
+                <!-- Summary & Save -->
+                <li class="nav-item">
+                  <a class="nav-link" href="#SummaryDiv"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      fill="currentColor"
+                      class="bi bi-clipboard2-check"
+                    >
+                      <path
+                        d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5z"
+                      />
+                      <path
+                        d="M3 2.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 0 0-1h-.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1H12a.5.5 0 0 0 0 1h.5a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5z"
+                      />
+                      <path
+                        d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"
+                      />
+                    </svg>
+                    Summary & Save
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!------------------------------------------------ Patient List ------------------------------------------->
+    <div
+      id="PatientList"
+      class="px-4 mx-auto collapse"
+      style="max-width: 800px"
+    >
+      <div class="row border rounded-5 bg-light p-3">
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">Patient List</h4>
+          <input
+            type="text"
+            id="UserID"
+            value="66f98451e7c85d5b786bfd98"
+            hidden
+          />
+          <div class="spinner-border" id="spinner" role="status" hidden></div>
+          <table class="table table-hover table-sm table-bordered">
+            <thead class="text-center">
+              <tr>
+                <th scope="col" width="30%">Name</th>
+                <th scope="col" width="15%">Age</th>
+                <th scope="col" width="30%">Diagnosis</th>
+                <th scope="col" width="20%">IPD No.</th>
+                <th scope="col" width="5%"></th>
+              </tr>
+            </thead>
+            <tbody id="PatientNameList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!---------------------------------------------------- Form ----------------------------------------------->
+    <form
+      id="primaryInfo"
+      class="needs-validation p-3 mx-auto"
+      novalidate
+      style="max-width: 800px"
+    >
+      <!-------------- I. Primary Info ---------------------------->
+      <div
+        class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-3"
+        id="PrimaryInfoHeading"
+      >
+        <!-- R0 - Title - Primary Info -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">
+            Primary Info
+            <a
+              class="btn btn-link"
+              style="font-size: small; float: right"
+              onclick="if(confirm('Changes will be lost!')){FormReset()}"
+              >Reset Form</a
+            >
+          </h4>
+          <input type="text" id="PatientID" hidden />
+        </div>
+
+        <!-- Primary Info Always Show Rows D=Desktop, M=Mobile -->
+        <!-- DR1 - Pt Name, Age, Sex-->
+        <!-- MR1 - Pt Name -->
+        <div class="col-sm-6">
+          <div class="form-floating">
+            <input
+              type="text"
+              class="form-control"
+              id="patientName"
+              placeholder="Please enter name"
+              required
+            />
+            <label for="patientName">Patient Name*</label>
+          </div>
+        </div>
+
+        <!-- MR2 - Age, Sex  -->
+        <div class="col-sm-6">
+          <div class="row gx-1">
+            <!-- Age -->
+            <div class="col-4">
+              <div class="form-floating">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="age"
+                  placeholder="0"
+                  required
+                />
+                <label for="age">Age*</label>
+              </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="col-8">
+              <div class="form-floating">
+                <select class="form-control" id="gender" required>
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                <label for="gender">Gender*</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DR2 - Contact, Email, More Details -->
+        <!-- MR3 - Contact -->
+        <div class="col-sm-5">
+          <div class="form-floating">
+            <input
+              type="text"
+              class="form-control"
+              id="ContactNumber"
+              pattern="[0-9]{10}"
+              placeholder="+91##########"
+            />
+            <label for="ContactNumber">Contact Number</label>
+            <div class="invalid-feedback">
+              Please enter a 10-digit Contact Number
+            </div>
+          </div>
+        </div>
+
+        <!--MR4 - Email, Show/Hide Details Btn  -->
+        <div class="col-sm-7">
+          <div class="row gx-1 justify-content-center">
+            <!-- Email -->
+            <div class="col-6">
+              <div class="form-floating">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="EmailID"
+                  placeholder="example@abc.com"
+                />
+                <label for="EmailID">Email ID</label>
+                <div class="invalid-feedback">
+                  Please enter a valid email id
+                </div>
+              </div>
+            </div>
+
+            <!-- More Details -->
+            <div class="col-6 align-self-center">
+              <div class="d-grid col-10 mx-auto">
+                <button
+                  type="button"
+                  id="PIMoreDetailsBtn"
+                  class="btn btn-sm btn-primary"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#PIExpanded"
+                >
+                  Show/Hide Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary Info Collapsed Rows -->
+        <div class="collapse col-sm-12" id="PIExpanded">
+          <div class="row gx-1 gy-2">
+            <!-- DR3 - Local Address 1,2 -->
+            <!-- MR5 - Address Line 1 -->
+            <div class="col-sm-6">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AddLine1"
+                  placeholder="Address Line 1"
+                />
+                <label for="AddLine1">Address Line 1</label>
+              </div>
+            </div>
+
+            <!-- MR6 - Address Line 2 -->
+            <div class="col-sm-6">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AddLine2"
+                  placeholder="Address Line 2"
+                />
+                <label for="AddLine1">Address Line 2</label>
+              </div>
+            </div>
+
+            <!-- DR4 - Country,State,City,Pincode -->
+            <!-- MR7 - Country, State -->
+            <div class="col-sm-6">
+              <div class="row gx-1">
+                <!-- Country -->
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="Country"
+                      placeholder="Country"
+                    />
+                    <label for="Country">Country</label>
+                  </div>
+                </div>
+
+                <!-- State -->
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="State"
+                      placeholder="State"
+                    />
+                    <label for="State">State</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MR8 - City,Pincode -->
+            <div class="col-sm-6">
+              <div class="row gx-1">
+                <!-- City -->
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="City"
+                      placeholder="City"
+                    />
+                    <label for="City">City</label>
+                  </div>
+                </div>
+
+                <!-- Pincode -->
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="Pincode"
+                      placeholder="Pincode"
+                    />
+                    <label for="Pincode">Pincode</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DR5 - Relative Name, Relation, Number -->
+            <!-- MR9 - Relative Name, Relation -->
+            <div class="col-sm-8">
+              <div class="row gx-1 bg-body-secondary p-1">
+                <!-- Relative Name -->
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="RelativeName"
+                      placeholder="Relative Name"
+                    />
+                    <label for="RelativeName">Relative Name</label>
+                  </div>
+                </div>
+
+                <!-- Relation -->
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="Relation"
+                      placeholder="Relation"
+                    />
+                    <label for="Relation">Relation</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MR10 - Relative Number-->
+            <div class="col-sm-4 bg-body-secondary p-1">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="RelativeNumber"
+                  placeholder="Relative Number"
+                  pattern="[0-9]{10}"
+                />
+                <label for="RelativeNumber">Relative's Contact Number</label>
+              </div>
+            </div>
+
+            <!-- DR6 - Referred By, Any other Info -->
+            <!-- MR11 - Referred By -->
+            <div class="col-sm-6">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Referredby"
+                  placeholder="Referred by"
+                />
+                <label for="Referredby">Referred by</label>
+              </div>
+            </div>
+
+            <!-- MR12 - Any Other Info -->
+            <div class="col-sm-6">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AnyOtherInfo"
+                  placeholder="Any Other Info"
+                />
+                <label for="AnyOtherInfo">Any Other Info</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-------------- II. First Visit ---------------------------->
+      <div
+        class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-3"
+        id="FirstVisitHeading"
+      >
+        <!-- R0 - Title - First Visit -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">First Visit</h4>
+        </div>
+
+        <!-- DR1 - Visit Date, Place, Reg No., Show/Hide Details Btn -->
+        <!-- MR1 - Visit Date, Place -->
+        <div class="col-sm-6">
+          <div class="row gx-1">
+            <!-- Visit Date -->
+            <div class="col-5">
+              <div class="form-floating">
+                <input
+                  type="date"
+                  class="form-control"
+                  id="FirstVisitDate"
+                  placeholder="Date"
+                  onchange="FirstVisitEnabler()"
+                  required
+                />
+                <label for="FirstViistDate">1st Visit Date*</label>
+              </div>
+            </div>
+
+            <!-- Visit Place -->
+            <div class="col-7">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="HospitalName"
+                  placeholder="Name"
+                />
+                <label for="HospitalName">Hospital Name</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MR2 - Reg No., Add More Details Btn -->
+        <div class="col-sm-6">
+          <div class="row gx-1">
+            <!-- Reg No. -->
+            <div class="col-7">
+              <div class="form-floating">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="IPDNo"
+                  placeholder="0"
+                />
+                <label for="IPDNo">IPD No.</label>
+              </div>
+            </div>
+
+            <!-- Add Details Btn -->
+            <div class="col-5 align-self-center">
+              <div class="d-grid col-10 mx-auto">
+                <button
+                  type="button"
+                  id="FVMoreDetailsBtn"
+                  class="btn btn-sm btn-primary"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#FVExpanded"
+                >
+                  Show/Hide Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- First Visit Collapsible Rows -->
+        <div class="collapse col-sm-12" id="FVExpanded">
+          <div class="row gx-1 gy-2">
+            <!-- DR2 - Chief Complaints -->
+            <!-- MR3&4 - Chief Complaints -->
+            <div class="col-sm-12">
+              <div class="form-floating">
+                <textarea
+                  id="Complaints"
+                  class="form-control"
+                  placeholder="Describe the patients compliants here"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="He/She had a complaint of..."
+                  oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                  required
+                ></textarea>
+                <label for="Complaints">Chief Complaints*</label>
+                <div class="form-text">
+                  Example:
+                  <i
+                    >Pain in the right side of the face since 2 weeks and
+                    swelling since 1 week and halitosis.</i
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- DR3 - On Examination -->
+            <!-- MR5&6 - On Examination -->
+            <div class="col-sm-12">
+              <div class="form-floating">
+                <textarea
+                  id="OnExam"
+                  class="form-control"
+                  oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                  placeholder="Describe the examination findings here"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="On examination there was..."
+                  required
+                ></textarea>
+                <label for="OnExam">On Examination*</label>
+                <div class="form-text">
+                  Example:
+                  <i
+                    >a 2x2cm ulcer seen in the right buccal mucosa and a single
+                    hard right submandibular node palpable.</i
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- DR4 - Medical History -->
+            <!-- MR7&8 - Medical History -->
+            <div class="col-sm-12">
+              <div class="form-floating">
+                <textarea
+                  id="MedicalHistory"
+                  class="form-control"
+                  data-bs-toggle="tooltip"
+                  data-bs-title="He/She has..."
+                  oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                  placeholder="Relevant Medical History"
+                ></textarea>
+                <label for="MedicalHistory"
+                  >Relevant Medical History, if any</label
+                >
+                <div class="form-text">
+                  Eg:
+                  <i
+                    >Well controlled hypertension since 4 yrs. / On Ecosprin
+                    75mg for IHD since 2 years.</i
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-------------- III. Hopi & Investgations ------------------>
+      <div
+        class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-3"
+        id="HOPIandInvHeading"
+      >
+        <!-- R0 - Title - Hopi & Investgations -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">HOPI & Investigations</h4>
+        </div>
+
+        <!-- HOPI Always Show -->
+        <!-- DR1 - HOPI -->
+        <!-- MR1&2 - HOPI -->
+        <div class="col-sm-12">
+          <div class="form-floating">
+            <textarea
+              id="HOPI"
+              class="form-control"
+              data-bs-toggle="tooltip"
+              data-bs-title="Previously, he/she has undergone..."
+              oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+              placeholder="History of presenting illness"
+            ></textarea>
+            <label for="HOPI">History of Presenting Illness, if any</label>
+            <div class="form-text">
+              Example:
+              <i
+                >3 cycles NACT (TPF) completed on 28/8/24. / Wide excision of R
+                buccal mucosa on 12/12/23.</i
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- DR1 - Add Inv Accordion -->
+        <!-- MR3 - Add Inv Accordion -->
+        <div class="col-sm-12">
+          <div class="accordion accordion-flush" id="InvAccordion">
+            <!-- Inv Header Btn -->
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#flush-collapseOne"
+              >
+                Investgations
+              </button>
+            </h2>
+
+            <!-- Collapsible Investiagtion Form -->
+            <div
+              id="flush-collapseOne"
+              class="accordion-collapse collapse"
+              data-bs-parent="#InvAccordion"
+            >
+              <div class="accordion-body">
+                <div class="row gx-1 gy-2">
+                  <!-- Investigation Table -->
+                  <div class="col-12">
+                    <h5 class="mt-3">Investigations</h5>
+                    <table class="table table-sm table-bordered">
+                      <thead>
+                        <tr class="text-center">
+                          <th scope="col" width="15%">Type</th>
+                          <th scope="col" width="15%">Site</th>
+                          <th scope="col" width="15%">Date</th>
+                          <th scope="col" width="50%">Findings</th>
+                          <th scope="col" width="5%"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="InvTable" style="font-size: smaller"></tbody>
+                    </table>
+                  </div>
+
+                  <!-- AddInv Modal Btn -->
+
+                  <div class="d-grid col-4 mx-auto">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#AddInvModal"
+                    >
+                      Add Investigation
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="Diagnosis" style="font-size: 1rem"
+              ><b>Provisional Diagnosis</b></label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="Diagnosis"
+              placeholder=""
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-------------- IV. Treatment ------------------------------>
+      <div
+        class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-4"
+        id="TreatmentHeading"
+      >
+        <!-- R0 - Title - Treatment -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">Treatment</h4>
+        </div>
+
+        <!-- DR1 - Treatment Type, Date, Place, Show/Hide Btn -->
+        <!-- MR1 - Treatment Type, Rx Date -->
+        <div class="col-sm-6">
+          <div class="row gx-1">
+            <!-- Treatment Type -->
+            <div class="col-6">
+              <div class="form-floating">
+                <select class="form-control" id="RxType" disabled>
+                  <option value="Surgery">Surgery</option>
+                </select>
+                <label for="RxType">Treatment Type*</label>
+              </div>
+            </div>
+
+            <!-- Rx Date -->
+            <div class="col-6">
+              <div class="form-floating">
+                <input
+                  type="date"
+                  class="form-control"
+                  id="RxDate"
+                  onchange="RxEnabler()"
+                  required
+                />
+                <label for="RxDate">Rx Date*</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MR2 - Place, Show/Hide Details Btn -->
+        <div class="col-sm-6">
+          <div class="row gx-1">
+            <!-- Place -->
+            <div class="col-7">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="RxPlace"
+                  placeholder="Hospital Name"
+                />
+                <label for="RxPlace">Place</label>
+              </div>
+            </div>
+
+            <!-- Show/hide details Btn -->
+            <div class="col-5">
+              <div class="d-grid col-10 mx-auto">
+                <button
+                  type="button"
+                  id="RxMoreDetailsBtn"
+                  class="btn btn-sm btn-primary"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#RxExpanded"
+                >
+                  Show/Hide Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Treatment Collapsible Rows (Currently Always show as Rx always Surgery)-->
+        <div class="col-sm-12 collapse" id="RxExpanded">
+          <div class="row gx-1 gy-2">
+            <!---------- 1. DR2 - Primary Select ---------->
+            <!-- MR3&4 - Primary Select (Input) -->
+            <div class="col-sm-12 mb-2">
+              <div class="row gx-2 align-items-center">
+                <!-- Primary Select Label -->
+                <div class="col-3 border-bottom">
+                  <label for="SxType" class="col-form-label" id="PrimaryHeading"
+                    ><b>Primary Resection</b></label
+                  >
+                </div>
+
+                <!-- Primary Select Input -->
+                <div class="col-6">
+                  <select
+                    class="form-control"
+                    id="SxType"
+                    onchange="PrimaryEnabler()"
+                  >
+                    <option value="">Not Addressed</option>
+                    <option value="Wide Excision">Wide Excision</option>
+                    <option value="Composite Resection">
+                      Composite Resection
+                    </option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <!-- Show/hide details Btn -->
+                <div class="col-3">
+                  <div class="d-grid col-10 mx-auto">
+                    <button
+                      type="button"
+                      id="PrimaryTumourDetailsBtn"
+                      class="btn btn-sm btn-info"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#PrimaryTumourDetails"
+                      disabled
+                    >
+                      Show/Hide Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---- DR3-6 Primary Collapsible Rows Enabled on onchange ---->
+            <div class="col-sm-12 collapse" id="PrimaryTumourDetails">
+              <div
+                class="row gx-1 gy-2 border px-3 pb-2 rounded-3"
+                style="background-color: var(--bs-info-bg-subtle)"
+              >
+                <!-- DR3 - Main Site, Side, Incision -->
+                <!-- MR5 - Main Site, Side -->
+                <div class="col-sm-6" id="PDTSiteSide" hidden>
+                  <div class="row gx-1">
+                    <!-- Main Site -->
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label for="SxSite">Primary Site</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="SxSite"
+                          placeholder="Select"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Side -->
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label for="SxSide">Side</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="SxSide"
+                          placeholder="Select"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MR6 - Incision -->
+                <div class="col-sm-6" id="PDTInc" hidden>
+                  <div class="form-group">
+                    <label for="Incisions">Incision (optional)</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="Incisions"
+                      placeholder="Type to Search"
+                    />
+                  </div>
+                </div>
+
+                <!-- Additional Sites Header -->
+                <div class="col-sm-12" id="PDTAddlHead" hidden>
+                  <h6 class="border-bottom pt-3">Additional Sites</h6>
+                </div>
+
+                <!-- DR4 - Addl Mucosa, Addl Mandible -->
+                <!-- MR7 - Addl Mucosa -->
+                <div class="col-sm-6" id="PDTAddlMuc" hidden>
+                  <div class="form-group">
+                    <label for="AdditionalSitesMucosal">Mucosal</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="AdditionalSitesMucosal"
+                      placeholder="Type to Search"
+                    />
+                  </div>
+                </div>
+
+                <!-- MR8 - Addl Mandible  -->
+                <div class="col-sm-6" id="PDTAddlMan" hidden>
+                  <div class="form-group">
+                    <label for="AdditionalSitesMandible">Mandible</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="AdditionalSitesMandible"
+                      placeholder="Type to Search"
+                    />
+                  </div>
+                </div>
+
+                <!-- DR5 - Addl Maxilla, Addl Deeper -->
+                <!-- MR9 - Addl Maxilla -->
+                <div class="col-sm-6" id="PDTAddlMax" hidden>
+                  <div class="form-group">
+                    <label for="AdditionalSitesMaxilla">Maxilla</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="AdditionalSitesMaxilla"
+                      placeholder="Type to Search"
+                    />
+                  </div>
+                </div>
+
+                <!-- MR10 - Addl Deeper -->
+                <div class="col-sm-6" id="PDTAddlDeep" hidden>
+                  <div class="form-group">
+                    <label for="AdditionalSitesDeeper">Deeper Structures</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="AdditionalSitesDeeper"
+                      placeholder="Type to Search"
+                    />
+                  </div>
+                </div>
+
+                <!-- DR6 - Addl Skin, Addl Procedures -->
+                <!-- MR11 - Addl Skin -->
+                <div class="col-sm-6" id="PDTAddlSkin" hidden>
+                  <div class="form-group">
+                    <label for="AdditionalSitesSkin">Skin</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="AdditionalSitesSkin"
+                      placeholder="Type to Search"
+                    />
+                  </div>
+                </div>
+
+                <!-- MR12 - Addl Procedures -->
+                <div class="col-sm-12" id="PDTAddlPro" hidden>
+                  <div class="form-group">
+                    <label for="AdditionalPro"
+                      >Other Additional Procedures</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="AdditionalPro"
+                      placeholder="Type to Search"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!------------ 2. DR2 - Neck Select --------------->
+            <!-- MR3&4 - Neck Select (Input)-->
+            <div class="col-sm-12 mb-2">
+              <div class="row gx-2 align-items-center">
+                <!-- Neck Select Label -->
+                <div class="col-3 border-bottom">
+                  <label for="NeckType" class="col-form-label" id="NeckHeading"
+                    ><b>Neck Dissection</b></label
+                  >
+                </div>
+
+                <!-- Neck Select Input -->
+                <div class="col-6">
+                  <select
+                    class="form-control"
+                    id="NeckType"
+                    onchange="NeckEnabler()"
+                  >
+                    <option value="">Not Addressed</option>
+                    <option value="Ipsilateral">Ipsilateral</option>
+                    <option value="Bilateral">Bilateral</option>
+                    <option value="Contralateral">Contralateral</option>
+                  </select>
+                </div>
+
+                <!-- Show/hide details Btn -->
+                <div class="col-3">
+                  <div class="d-grid col-10 mx-auto">
+                    <button
+                      type="button"
+                      id="NeckDetailsBtn"
+                      class="btn btn-sm btn-warning"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#NeckDetails"
+                      disabled
+                    >
+                      Show/Hide Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1. DR3-4 Neck Dissection Collapsible Rows Same Neck on onchange  -->
+            <div class="col-sm-12 collapse" id="NeckDetails">
+              <div class="row">
+                <!-- 1. DR3-4 Neck Dissection Collapsible Rows Same Neck on onchange  -->
+                <div class="col-sm-12" id="SameNeckDetails" hidden>
+                  <div
+                    class="row gx-1 gy-2 border px-3 pb-2 rounded-3"
+                    style="background-color: var(--bs-warning-bg-subtle)"
+                  >
+                    <!-------- Same Neck Details -------->
+                    <!-- DR3 - Same Neck Header & Extent -->
+                    <!-- MR5&6 - Same Neck Header & Extent -->
+                    <div class="col-sm-12">
+                      <!-- Same Neck Header -->
+                      <p class="text-center border border-secondary">
+                        <b>Same Side Neck</b><br />
+                        <span class="form-text">
+                          <i style="font-size: 0.7rem"
+                            >In case of Central Disease: Right Neck</i
+                          ></span
+                        >
+                      </p>
+
+                      <!-- Extent -->
+                      <div class="form-group">
+                        <label for="RNeckExtent">Extent</label>
+                        <input class="form-control" id="RNeckExtent" />
+                      </div>
+                    </div>
+
+                    <!-- DR4 - Same Neck Nodes and Structures -->
+                    <!-- MR7 - Same Neck Nodes -->
+                    <div class="col-sm-6">
+                      <p class="mb-0" style="font-size: 0.9rem">
+                        <b>Nodes Removed</b>
+                      </p>
+                      <!-- Node CheckBoxes -->
+                      <div class="form-text" id="RNeckLNBoxes">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IA"
+                            id="RIA"
+                            disabled
+                          /><label>IA</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IB"
+                            id="RIB"
+                            disabled
+                          /><label>IB</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IIA"
+                            id="RIIA"
+                            disabled
+                          /><label>IIA</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IIB"
+                            id="RIIB"
+                            disabled
+                          /><label>IIB</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="III"
+                            id="RIII"
+                            disabled
+                          /><label>III</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IV"
+                            id="RIV"
+                            disabled
+                          /><label>IV</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="VA"
+                            id="RVA"
+                            disabled
+                          /><label>VA</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="VB"
+                            id="RVB"
+                            disabled
+                          /><label>VB</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- MR8 - Same Neck Structures -->
+                    <div class="col-sm-6">
+                      <p class="mb-0" style="font-size: 0.9rem">
+                        <b>Structures Removed</b>
+                      </p>
+                      <!-- Structure CheckBoxes -->
+                      <div class="form-text" id="RNeckStructureBoxes">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="SCM"
+                            id="RSCM"
+                            disabled
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Sternocleidomastoid Muscle"
+                            >SCM</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="SAN"
+                            id="RSAN"
+                            disabled
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Spinal Accessory Nerve"
+                            >SAN</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IJV"
+                            id="RIJV"
+                            disabled
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Internal Jugular Vein"
+                            >IJV</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="SG"
+                            id="RSG"
+                            disabled
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Submandibular Gland"
+                            >SG</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="Skin"
+                            id="RSkin"
+                            disabled
+                          /><label>Skin</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="HGN"
+                            id="RHGN"
+                            disabled
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Hypoglossal Nerve"
+                            >HGN</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2. DR3-4 Neck Dissection Collapsible Rows Opposite Neck on onchange  -->
+                <div class="col-sm-12" id="OppositeNeckDetails" hidden>
+                  <div
+                    class="row gx-1 gy-2 border px-3 pb-2 rounded-3"
+                    style="background-color: var(--bs-warning-bg-subtle)"
+                  >
+                    <!-------- Opposite Neck Details -------->
+                    <!-- DR3 - Opposite Neck Header & Extent -->
+                    <!-- MR5&6 - Opposite Neck Header & Extent -->
+                    <div class="col-sm-12">
+                      <!-- Opposite Neck Header -->
+                      <p class="text-center border border-secondary">
+                        <b>Opposite Side Neck</b><br />
+                        <span class="form-text">
+                          <i style="font-size: 0.7rem"
+                            >In case of Central Disease: Left Neck</i
+                          ></span
+                        >
+                      </p>
+
+                      <!-- Extent -->
+                      <div class="form-group">
+                        <label for="LNeckExtent">Extent</label>
+                        <input class="form-control" id="LNeckExtent" />
+                      </div>
+                    </div>
+
+                    <!-- DR4 - Opposite Neck Nodes and Structures -->
+                    <!-- MR7 - Opposite Neck Nodes -->
+                    <div class="col-sm-6">
+                      <p class="mb-0" style="font-size: 0.9rem">
+                        <b>Nodes Removed</b>
+                      </p>
+                      <!-- Node CheckBoxes -->
+                      <div class="form-text" id="LNeckLNBoxes">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IA"
+                            id="LIA"
+                          /><label>IA</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IB"
+                            id="LIB"
+                          /><label>IB</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IIA"
+                            id="LIIA"
+                          /><label>IIA</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IIB"
+                            id="LIIB"
+                          /><label>IIB</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="III"
+                            id="LIII"
+                          /><label>III</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IV"
+                            id="LIV"
+                          /><label>IV</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="VA"
+                            id="LVA"
+                          /><label>VA</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="VB"
+                            id="LVB"
+                          /><label>VB</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- MR8 - Opposite Neck Structures -->
+                    <div class="col-sm-6">
+                      <p class="mb-0" style="font-size: 0.9rem">
+                        <b>Structures Removed</b>
+                      </p>
+                      <!-- Structure CheckBoxes -->
+                      <div class="form-text" id="LNeckStructureBoxes">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="SCM"
+                            id="LSCM"
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Sternocleidomastoid Muscle"
+                            >SCM</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="SAN"
+                            id="LSAN"
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Spinal Accessory Nerve"
+                            >SAN</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="IJV"
+                            id="LIJV"
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Internal Jugular Vein"
+                            >IJV</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="SG"
+                            id="LSG"
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Submandibular Gland"
+                            >SG</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="Skin"
+                            id="LSkin"
+                          /><label>Skin</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="Parotid"
+                            id="LParotid"
+                          /><label>Parotid</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value="HGN"
+                            id="LHGN"
+                          /><label
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Hypoglossal Nerve"
+                            >HGN</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---- 3. DR2 - Reconstruction ---->
+            <!-- MR3&4 - Recon Select (Input) -->
+            <!-- Recon Select Header  -->
+            <div class="col-sm-12 mb-2" id="ReconHeading">
+              <div class="row gx-2 align-items-center">
+                <!-- Recon Select Label -->
+                <div class="col-3 border-bottom">
+                  <label for="ReconType" class="col-form-label"
+                    ><b>Recon</b></label
+                  >
+                </div>
+
+                <!-- Recon Select Input -->
+                <div class="col-9">
+                  <input
+                    class="form-control"
+                    id="ReconType"
+                    placeholder="Type to Enter"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!--  DR7 - Notes Accordion ---->
+            <div class="col-sm-12">
+              <!-- Notes Accordion Header Btn -->
+              <h6
+                class="border-bottom pt-3"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#flush-collapseTwo"
+              >
+                Add Notes +
+              </h6>
+
+              <!-- Collapsible Notes inputs -->
+              <div class="row gx-1 gy-2 collapse" id="flush-collapseTwo">
+                <!-- MR13 - Intra-op notes -->
+                <div class="col-sm-6">
+                  <div class="form-floating">
+                    <textarea
+                      id="IntraopNotes"
+                      class="form-control"
+                      data-bs-toggle="tooltip"
+                      data-bs-title="Intra-operatively,..."
+                      oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                      placeholder="Describe the patients compliants here"
+                    ></textarea>
+                    <label for="IntraopNotes"
+                      >Intra-operative Notes, if any</label
+                    >
+                    <div class="form-text">
+                      Example:
+                      <i
+                        >all margins were free on frozen section. / patient
+                        developed bradycardia which was managed
+                        conseravtively.</i
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MR14 - Post-op notes -->
+                <div class="col-sm-6">
+                  <div class="form-floating">
+                    <textarea
+                      id="PostopNotes"
+                      class="form-control"
+                      data-bs-toggle="tooltip"
+                      data-bs-title="In the post-operative phase..."
+                      oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                      placeholder="Post-operative Notes"
+                    ></textarea>
+                    <label for="PostopNotes"
+                      >Post-operative Notes, if any</label
+                    >
+                    <div class="form-text">
+                      Example:
+                      <i
+                        >patient developed a neck haematoma on POD1 and
+                        underwent re-exploration for the same</i
+                      ><br />
+                      <i>(Leave blank if uneventful)</i>
+                    </div>
+                  </div>
+                </div>
+
+                <!--- MR15 - Discharge Date -->
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="DischargeDate">Discharge Date</label>
+                    <input
+                      type="date"
+                      id="DischargeDate"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <!-- MR14 - Recovery Phase notes -->
+                <div class="col-sm-6">
+                  <div class="form-floating">
+                    <textarea
+                      id="RecoveryNotes"
+                      class="form-control"
+                      data-bs-toggle="tooltip"
+                      data-bs-title="In the recovery phase..."
+                      oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                      placeholder="Recovery phase notes"
+                    ></textarea>
+                    <label for="RecoveryNotes"
+                      >Recovery Phase Notes, if any</label
+                    >
+                    <div class="form-text">
+                      (Notes from discharge till recovery from surgery)<br />
+                      Example:
+                      <i
+                        >patient developed a salivary leak and was managed
+                        conseravtively for the same.</i
+                      ><br />
+                      <i>(Leave blank if uneventful)</i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--------------------------- V. Histopathology -------------------------->
+      <div
+        class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-3"
+        id="HistopathRow"
+        hidden
+      >
+        <!-- R0 - Title - Histopathology -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">Histopathology</h4>
+        </div>
+
+        <!-- All Collapsible opened on inputs from Sx ---------->
+        <!----------- 1. DR1-4 - Primary Histopath --------------->
+        <div class="col-sm-12" id="PrimaryHP" hidden>
+          <!-- Disclaimer -->
+          <div
+            class="row gx-1 gy-1 p-1 border"
+            style="background-color: var(--bs-info-bg-subtle)"
+          >
+            <p class="text-center mb-1"><b>Primary Tumour HP</b></p>
+            <div class="form-text" style="font-size: 0.7rem">
+              Please input all values in millimeters (mm) only
+            </div>
+
+            <!-- DR1 - Histo, DOI, Size -->
+            <!-- MR1 - Histo, DOI -->
+            <div class="col-sm-5">
+              <div class="row gx-1">
+                <!-- Histo -->
+                <div class="col-8">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-body-secondary"
+                      for="Histology"
+                      >Histology</span
+                    >
+                    <select id="Histology" class="form-control">
+                      <option value="">Select</option>
+                      <option
+                        value="Well Differentiated Squamous Cell Carcinoma"
+                      >
+                        WDSCC
+                      </option>
+                      <option
+                        value="Moderately Differentiated Squamous Cell Carcinoma"
+                      >
+                        MDSCC
+                      </option>
+                      <option
+                        value="Poorly Differentiated Squamous Cell Carcinoma"
+                      >
+                        PDSCC
+                      </option>
+                      <option value="Carcinoma in-situ">
+                        Carcinoma in-situ
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- DOI -->
+                <div class="col-4">
+                  <div class="input-group">
+                    <span class="input-group-text bg-body-secondary">DOI</span>
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="TsizeDOI"
+                      class="form-control"
+                      placeholder=""
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MR2 - Size -->
+            <div class="col-sm-7">
+              <div class="input-group">
+                <span class="input-group-text bg-body-secondary">Size</span>
+                <input
+                  type="text"
+                  pattern="\d{1,2}"
+                  id="TsizeAP"
+                  class="form-control"
+                  placeholder="AP"
+                />
+                <span class="input-group-text">x</span>
+                <input
+                  type="text"
+                  pattern="\d{1,2}"
+                  id="TsizeTrans"
+                  class="form-control"
+                  placeholder="T"
+                />
+                <span class="input-group-text">x</span>
+                <input
+                  type="text"
+                  pattern="\d{1,2}"
+                  id="TsizeVert"
+                  class="form-control"
+                  placeholder="V"
+                />
+              </div>
+            </div>
+
+            <!-- DR2 - Margins, LVI,PNI,WPOI -->
+            <!-- MR3 - Margins -->
+            <div class="col-sm-6">
+              <div class="row gx-1">
+                <!-- Closest Margin -->
+                <div class="col-8">
+                  <label for="ClosestMargin">Closest Margin</label>
+                  <div class="form-group">
+                    <input
+                      list="margins"
+                      type="text"
+                      id="ClosestMargin"
+                      class="form-control"
+                      placeholder="Type to Search "
+                    />
+                    <datalist id="margins"></datalist>
+                  </div>
+                </div>
+
+                <!-- Distance -->
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="MarginDistance">Distance</label>
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="MarginDistance"
+                      class="form-control"
+                      placeholder="(in mm)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MR4 - LVI,PNI,WPOI -->
+            <div class="col-sm-6">
+              <div class="row gx-1">
+                <!-- PNI -->
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="PNI">PNI</label>
+                    <input
+                      type="text"
+                      id="PNI"
+                      class="form-control"
+                      placeholder="Select"
+                      list="PNILVIlist"
+                    />
+                    <datalist id="PNILVIlist"></datalist>
+                  </div>
+                </div>
+
+                <!-- LVI -->
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="LVI">LVI</label>
+                    <input
+                      type="text"
+                      id="LVI"
+                      class="form-control"
+                      placeholder="Select"
+                      list="PNILVIlist"
+                    />
+                  </div>
+                </div>
+
+                <!-- WPOI -->
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="WPOI">WPOI</label>
+                    <select id="WPOI" class="form-control">
+                      <option value="">Select</option>
+                      <option value="I">I</option>
+                      <option value="II">II</option>
+                      <option value="III">III</option>
+                      <option value="IV">IV</option>
+                      <option value="V">V</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DR3 - Bone,Skin,Muscle -->
+            <!-- MR5&6 - Bone,Skin,Muscle -->
+            <div class="col-sm-12">
+              <div class="row gx-1">
+                <!-- Bone -->
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="BoneInv">Bone</label>
+                    <select id="BoneInv" class="form-control">
+                      <option value=""></option>
+                      <option value="Absent">Absent</option>
+                      <option value="Present">Present</option>
+                      <option value="Superficial Cortical">
+                        Superficial Cortical
+                      </option>
+                      <option value="Deep Intramedullary">
+                        Deep Intramedullary
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Skin -->
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="SkinInv">Skin</label>
+                    <select type="text" id="SkinInv" class="form-control">
+                      <option value=""></option>
+                      <option value="Absent">Absent</option>
+                      <option value="Absent">Present</option>
+                      <option value="Subdermal">Subdermal</option>
+                      <option value="Grossly involved">Grossly Involved</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Muscle -->
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="MuscleInv">Muscle</label>
+                    <select id="MuscleInv" class="form-control">
+                      <option value=""></option>
+                      <option value="Absent">Absent</option>
+                      <option value="Present">Present</option>
+                      <option value="Present">Superficial</option>
+                      <option value="Present">Intrinsic</option>
+                      <option value="Present">Extrinsic</option>
+                      <option value="Present">Deep</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-text" style="font-size: 0.7rem">
+                  Involvement of Structures. Select "Absent" if invasion is not
+                  present to record it <br />
+                  <i
+                    >Note: Superficial = Buccinator, Orbicularis etc. Deep =
+                    Masticator Space muscles</i
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- DR4 - Additional Comments HP -->
+            <!-- MR7&8 - Additional Comments HP -->
+            <div class="col-sm-12">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AddlCommentPrimHP"
+                  placeholder="Additional Comments"
+                />
+                <label for="AddlCommentPrimHP">Additional Comments</label>
+              </div>
+              <div class="form-text" style="font-size: 0.7rem">
+                Eg. <i>Additional revised medial margin was free</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--- 2. DR1-3 - RNeck Histopath ---->
+        <div class="col-sm-12" id="RNeckHP" hidden>
+          <div
+            class="row gx-1 gy-1 p-1 border"
+            style="background-color: var(--bs-warning-bg-subtle)"
+          >
+            <p class="text-center mb-1"><b>Same Side Neck HP</b></p>
+
+            <!-- DR1 - RNodal Yeild,RPosit Nodes,RNodes Involved Check Boxes, RSizeNode,RSizeMet,RECS,RDistance -->
+            <!-- MR1 - RNodal Yeild, RPosit Nodes,RNodes Involved Check Boxes -->
+            <div class="col-sm-6">
+              <div class="row gx-1 gy-1">
+                <!-- RNodal Yeild, RPositNodes -->
+                <div class="col-12">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-body-secondary"
+                      for="RNodalYeild"
+                      >Nodal Yeild</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="RNodalYeild"
+                      class="form-control"
+                    />
+                    <span
+                      class="input-group-text bg-body-secondary"
+                      for="RPositNodes"
+                      >+ive Nodes</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="RPositNodes"
+                      class="form-control"
+                      onchange="NodeHPEnabler('R')"
+                    />
+                  </div>
+                </div>
+
+                <!-- RNodes Involved Check Boxes -->
+                <div class="col-12" id="RInvolvedNodes">
+                  <div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="RHPIA"
+                        value="IA"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="RHPIA">IA</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="RHPIB"
+                        value="IB"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="RHPIB">IB</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="RHPIIA"
+                        value="IIA"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="RHPIIA">IIA</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="RHPIIB"
+                        value="IIB"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="RHPIIB">IIB</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="RHPIII"
+                        value="III"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="RHPIII">III</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="RHPIV"
+                        value="IV"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="RHPIV">IV</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="RHPV"
+                        value="V"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="RHPV">V</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MR2 - RSizeNode,RSizeMet,RECS,RDistance -->
+            <div class="col-sm-6" id="RPositNodeDetails">
+              <div class="row gx-1 gy-1">
+                <!-- RSizeNode,RSizeMet -->
+                <div class="col-12">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text text-wrap bg-body-secondary"
+                      for="RNodeSize"
+                      >Size Node</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="RNodeSize"
+                      class="form-control"
+                      disabled
+                    />
+                    <span
+                      class="input-group-text text-wrap bg-body-secondary"
+                      for="RMetSize"
+                      >Size Met</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="RMetSize"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <!-- RECS,RDistance -->
+                <div class="col-12">
+                  <div class="input-group">
+                    <span class="input-group-text bg-body-secondary" for="RECS"
+                      >ECS</span
+                    >
+                    <select id="RECS" class="form-control" disabled>
+                      <option value="">Select</option>
+                      <option value="Absent">Absent</option>
+                      <option value="Present">Present</option>
+                    </select>
+
+                    <span
+                      class="input-group-text bg-body-secondary"
+                      for="RECSDistance"
+                      >Distance</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="RECSDistance"
+                      class="form-control"
+                      placeholder="mm"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <!-- RInfo Largest Node -->
+                <div class="form-text" style="font-size: 0.7rem">
+                  Enter details of the <i>Largest</i> involved node
+                </div>
+              </div>
+            </div>
+
+            <!-- DR2 MR3&4 - Additional Comments RNeckHP -->
+            <div class="col-sm-12">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AddlCommentRNeckHP"
+                  placeholder="Additional Comments"
+                />
+                <label for="AddlCommentRNeckHP">Additional Comments</label>
+              </div>
+              <div class="form-text" style="font-size: 0.7rem">
+                <i>Any comments related to neck dissection HP</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--- 3. DR1-3 - LNeck Histopath ---->
+        <div class="col-sm-12" id="LNeckHP" hidden>
+          <div
+            class="row gx-1 gy-1 p-1 border"
+            style="background-color: var(--bs-warning-bg-subtle)"
+          >
+            <p class="text-center mb-1"><b>Contralateral Neck HP</b></p>
+
+            <!-- DR1 - LNodal Yeild,LPosit Nodes,LNodes Involved Check Boxes, LSizeNode,LSizeMet,LECS,LDistance -->
+            <!-- MR1 - LNodal Yeild, LPosit Nodes,LNodes Involved Check Boxes -->
+            <div class="col-sm-6">
+              <div class="row gx-1 gy-1">
+                <!-- LNodal Yeild, LPositNodes -->
+                <div class="col-12">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-body-secondary"
+                      for="LNodalYeild"
+                      >Nodal Yeild</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="LNodalYeild"
+                      class="form-control"
+                    />
+                    <span
+                      class="input-group-text bg-body-secondary"
+                      for="LPositNodes"
+                      >+ive Nodes</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="LPositNodes"
+                      class="form-control"
+                      onchange="NodeHPEnabler('L')"
+                    />
+                  </div>
+                </div>
+
+                <!-- LNodes Involved Check Boxes -->
+                <div class="col-12" id="LInvolvedNodes">
+                  <div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="LHPIA"
+                        value="IA"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="LHPIA">IA</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="LHPIB"
+                        value="IB"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="LHPIB">IB</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="LHPIIA"
+                        value="IIA"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="LHPIIA">IIA</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="LHPIIB"
+                        value="IIB"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="LHPIIB">IIB</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="LHPIII"
+                        value="III"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="LHPIII">III</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="LHPIV"
+                        value="IV"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="LHPIV">IV</label>
+                    </div>
+                    <div class="form-check form-check-inline col-1">
+                      <input
+                        type="checkbox"
+                        id="LHPV"
+                        value="V"
+                        class="form-check-input"
+                        disabled
+                      />
+                      <label for="LHPV">V</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MR2 - LSizeNode,LSizeMet,LECS,LDistance -->
+            <div class="col-sm-6" id="LPositNodeDetails">
+              <div class="row gx-1 gy-1">
+                <!-- LSizeNode,LSizeMet -->
+                <div class="col-12">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text text-wrap bg-body-secondary"
+                      for="LNodeSize"
+                      >Size Node</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="LNodeSize"
+                      class="form-control"
+                      disabled
+                    />
+                    <span
+                      class="input-group-text text-wrap bg-body-secondary"
+                      for="LMetSize"
+                      >Size Met</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="LMetSize"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <!-- LECS,LDistance -->
+                <div class="col-12">
+                  <div class="input-group">
+                    <span class="input-group-text bg-body-secondary" for="LECS"
+                      >ECS</span
+                    >
+                    <select id="LECS" class="form-control" disabled>
+                      <option value="">Select</option>
+                      <option value="Absent">Absent</option>
+                      <option value="Present">Present</option>
+                    </select>
+
+                    <span
+                      class="input-group-text bg-body-secondary"
+                      for="LECSDistance"
+                      >Distance</span
+                    >
+                    <input
+                      type="text"
+                      pattern="\d{1,2}"
+                      id="LECSDistance"
+                      class="form-control"
+                      placeholder="mm"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <!-- LInfo Largest Node -->
+                <div class="form-text" style="font-size: 0.7rem">
+                  Enter details of the <i>Largest</i> involved node
+                </div>
+              </div>
+            </div>
+
+            <!-- DR2 MR3&4 - Additional Comments LNeckHP -->
+            <div class="col-sm-12">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AddlCommentLNeckHP"
+                  placeholder="Additional Comments"
+                />
+                <label for="AddlCommentLNeckHP">Additional Comments</label>
+              </div>
+              <div class="form-text" style="font-size: 0.7rem">
+                <i>Any comments related to this neck dissection HP</i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DR7 - TNM, Calc Btn -->
+        <!-- MR13&14 - TNM, Calc Btn -->
+        <div class="col-sm-12" id="TNM" hidden>
+          <div class="row gx-1 gy-2">
+            <!-- MR13 - TNM -->
+            <div class="col-12">
+              <div class="form-group">
+                <label for="Tstage">TNM Staging</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-body-secondary">p</span>
+                  <span class="input-group-text bg-body-secondary">T</span>
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="Tstage"
+                    id="Tstage"
+                    value=""
+                    oninput=" AJCCTstage()"
+                  />
+                  <span class="input-group-text bg-body-secondary">N</span>
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="Nstage"
+                    id="Nstage"
+                    value=""
+                    oninput=" AJCCNstage()"
+                  />
+                </div>
+                <div
+                  class="form-text"
+                  style="font-size: small"
+                  id="TNMTextTstage"
+                ></div>
+                <div
+                  class="form-text"
+                  style="font-size: small"
+                  id="TNMTextNstage"
+                ></div>
+                <div
+                  class="form-text"
+                  style="font-size: small; text-align: end"
+                >
+                  <i>- According to AJCC 8th Edition </i>
+                </div>
+              </div>
+            </div>
+
+            <!-- MR14 - Calc Btn -->
+            <div class="col-12 align-self-center">
+              <div class="d-grid col-10 mx-auto">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="CalcpTNM()"
+                >
+                  Auto Calculate TNM
+                </button>
+                <div
+                  class="text-warning-emphasis"
+                  id="dataMissing"
+                  style="display: none"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-------------- VI. Subsequent Follow-up ------------------->
+      <div class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-3">
+        <!-- R0 - Title - Subsequent Follow-up -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">Subsequent Follow-up</h4>
+        </div>
+
+        <!-- DR1 MR1&2 - Subsequent Follow-up -->
+        <div class="col-sm-12 form-floating">
+          <textarea
+            id="Subsequent"
+            class="form-control"
+            data-bs-toggle="tooltip"
+            data-bs-title="He/She is advised..."
+            oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+            placeholder="Subsequent"
+          ></textarea>
+          <label for="Subsequent">Subsequent Advice and Follow-up</label>
+          <div class="form-text">
+            Example:
+            <i
+              >Adjuvant Radiotherapy/Chemotherapy and referred to
+              Radiation/Medical Oncologist for the same</i
+            ><br />
+            <i>(Leave blank if no adjuvant/special instructions)</i>
+          </div>
+        </div>
+      </div>
+
+      <!-------------- VII. Generate Summary & Save Btn ----------->
+      <div class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2">
+        <!-- R0 - Title - Gensummary and Save Btn -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">
+            Generate Summary and Save
+          </h4>
+        </div>
+
+        <!-- DR1 Incomplete Message Div, Submit Btn, Generate Summary Btn-->
+        <div class="d-grid col-10 mx-auto">
+          <!-- Incomplete msg Div -->
+          <div
+            class="form-text text-danger text-center"
+            id="IncompleteDataWarn"
+          ></div>
+
+          <!-- Gen Summary Btn -->
+          <button
+            type="button"
+            id="genSummaryBtn"
+            class="btn btn-primary mb-2"
+            onclick="genSummary()"
+          >
+            Generate Summary
+          </button>
+
+          <!-- Save to DB Btn -->
+          <button
+            class="btn btn-success"
+            type="button"
+            id="SubmitBtn"
+            onclick="validateForm()"
+          >
+            Save to Database
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!--------------------------------------------------- Summary --------------------------------------------->
+    <div
+      class="row border bg-light px-3 pb-4 gx-1 gy-2 mb-4"
+      style="display: none"
+      id="SummaryDiv"
+    >
+      <!-- R0 - Title - Summary -->
+      <div class="col-sm-12">
+        <h4 class="text-center border-bottom pb-2">Summary</h4>
+      </div>
+
+      <div class="col-sm-12">
+        <div
+          class="container p-3 bg-white border"
+          style="font-size: 14px; font-family: 'Times New Roman', Times, serif"
+          id="SummaryContent"
+        >
+          <h5 class="text-center"><u>CASE SUMMARY</u></h5>
+
+          <!-- Not enough info Div -->
+          <div id="not-enough-info" class="text-center text-danger">
+            There is not enough data to make a summary
+          </div>
+
+          <!-- 1. Primary Info Summary Div -->
+          <div id="primaryInfoSummaryDiv" class="mb-3"></div>
+
+          <!-- 2. First Visit Summary Div -->
+          <div id="FVSummaryDiv" class="mb-2"></div>
+
+          <!-- 3a. HOPI Div -->
+          <div id="HOPISummaryDiv" class="mb-2"></div>
+
+          <!-- 3b. Inv Div -->
+          <div id="InvSummaryDiv" class="mb-2"></div>
+
+          <!-- 4. Treatment Summary Div -->
+          <div id="TreatmentSummaryDiv" class="mb-2"></div>
+
+          <!-- 5. Histopath Summary Div -->
+          <div id="HistopathSummaryDiv" class="mb-2"></div>
+
+          <!-- 6. Subsequent Adv Summary Div -->
+          <div id="SubsequentSummaryDiv" class="mb-4"></div>
+
+          <!-- 7. Contact Info and Signature Summary Div -->
+          <div id="SignSummaryDiv" style="text-align: right"></div>
+        </div>
+      </div>
+    </div>
+
+    <!---------------------------------------------------- Toasts --------------------------------------------->
+    <div class="toast-container position-fixed top-0 start-0 p-3">
+      <!-- 1. Saved Failed Toast -->
+      <div
+        id="SavedFailToast"
+        class="toast align-items-center"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="FailedToastMsg">
+            Some Essential Data is missing or invalid.
+          </div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 2. Saved Successfully Toast -->
+      <div id="SavedSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="SuccessToastMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 3. Delete Successfully Toast -->
+      <div id="DeleteSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="DeleteSuccessToastMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 4. Not enough info to make a summary -->
+      <div id="NotEnoughInfoSum" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="NotEnoughInfoSumToastMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 5. Already Registered Toast -->
+      <div id="AlreadyRegisToast" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="UserAlreadyRegisMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 6. New User Registered Toast -->
+      <div id="NewRegisToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="NewRegisMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 7. Login Fail Toast -->
+      <div id="LoginFailToast" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="LoginFailMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 8. Login Success Toast -->
+      <div id="LoginSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="LoginSuccessMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 9. Logout Success Toast -->
+      <div id="LogoutSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="LogoutSuccessMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!------------------------------------------------ Register Modal ----------------------------------------->
+    <div
+      class="modal fade"
+      id="RegisterModal"
+      tabindex="-1"
+      aria-labelledby="registerModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog .modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">Register New User</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="Register" class="row gx-1 gy-2">
+              <!--  User Name Input-->
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="username"><b>Name: </b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    placeholder="Please enter your user name"
+                    required
+                  />
+                  <div class="invalid-feedback">Name is required!</div>
+                </div>
+              </div>
+
+              <!--  User Name Input-->
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="RegisMobileNo"><b>Mobile No: </b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="RegisMobileNo"
+                    placeholder="Please enter your Mobile No."
+                    pattern="[789][0-9]{9}"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    This does not look like a valid 10-digit Mobile Number
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="Register()">
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!------------------------------------------------ Add Inv Modal ----------------------------------------->
+    <div
+      class="modal fade"
+      id="AddInvModal"
+      tabindex="-1"
+      aria-labelledby="AddInvModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog .modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">Add Investigation</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="AddInvForm" class="row gx-1 gy-2">
+              <!-- Inv Date -->
+              <div class="col-4">
+                <div class="form-floating">
+                  <input
+                    class="form-control"
+                    type="date"
+                    id="InvDate"
+                    placeholder="Date"
+                  />
+                  <label for="InvDate">Inv Date</label>
+                </div>
+              </div>
+
+              <!-- Inv Type -->
+              <div class="col-4">
+                <div class="form-floating">
+                  <input
+                    id="InvType"
+                    type="text"
+                    class="form-control"
+                    list="inv-type"
+                    placeholder="Type"
+                  />
+                  <label for="InvType">Type*</label>
+                  <datalist id="inv-type"></datalist>
+                </div>
+              </div>
+
+              <!-- Inv Site/Area -->
+              <div class="col-4">
+                <div class="form-floating">
+                  <input
+                    id="InvSite"
+                    type="text"
+                    class="form-control"
+                    placeholder="Site"
+                    list="inv-site"
+                  />
+                  <label for="InvSite">Site/Area</label>
+                  <datalist id="inv-site"></datalist>
+                </div>
+              </div>
+
+              <!-- Inv Findings -->
+              <div class="col-12">
+                <div class="form-floating">
+                  <textarea
+                    id="InvFindings"
+                    class="form-control"
+                    placeholder="Findings or Report"
+                    data-bs-toggle="tooltip"
+                    data-bs-title="Findings showed..."
+                    oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                  ></textarea>
+                  <label for="InvFindings">Findings*</label>
+                </div>
+              </div>
+
+              <!-- Add Inv Btn -->
+              <div class="col-12 justify-content-center align-self-end">
+                <div class="d-grid col-6 mx-auto">
+                  <button
+                    type="button"
+                    id="addInvestigationBtn"
+                    class="btn btn-sm btn-primary"
+                    onclick="addInvestigation()"
+                  >
+                    Save Investigation
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-------------------------------------------------Scripts & CDN ------------------------------------------->
+    <!-- Datalists.js -->
+    <script src="js/datalists.js"></script>
+    <!-- Tagifys.js -->
+    <script src="js/tagifys.js"></script>
+    <!-- Main.js Script -->
+    <script src="js/main.js"></script>
+    <!-- TNM Logic.js -->
+    <script src="js/tnmlogic.js"></script>
+    <!-- Summary Script -->
+    <script src="js/summary.js"></script>
+    <!-- CRUD Script -->
+    <script src="js/CRUD.js"></script>
+
+    <!-- Bootstrap Script -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

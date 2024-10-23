@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appointments App</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
+    <!-- Override CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <!---------------------------------------------- Background Div ------------------------------------------>
+    <div class="video-background" id="video-background">
+      <!-- Video -->
+      <video autoplay muted loop>
+        <source type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Semi-transparent Overlay -->
+      <div class="overlay"></div>
+    </div>
+
+    <!----------------------------------------------  Header Navbar ------------------------------------------->
+    <nav class="navbar bg-body-tertiary sticky-top mb-1">
+      <div class="container-fluid">
+        <!-- Title, MyPateint Btn, Offcanvas Toggler -->
+        <div class="col-sm-12">
+          <div class="row gx-1 gy-2">
+            <!-- A. Summary Maker App Title -->
+            <div class="col-6">
+              <a class="navbar-brand p-0 m-0" href="#">Appointment App </a>
+              <br />
+              <span
+                class="bg-warning-subtle"
+                style="font-size: 0.7rem"
+                id="LoginStatus"
+                ><i>(Not Logged in - Demo User)</i></span
+              >
+            </div>
+
+            <!-- B. Patient List Retriver Button -->
+            <div class="col-4">
+              <div class="d-grid col-12 mx-auto">
+                <button
+                  type="button"
+                  class="col btn btn-primary"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#ApptNameList"
+                  onclick="GetApptList()"
+                >
+                  My Appointments
+                </button>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <!-- C. Offcanvas Toggler Btn  -->
+              <button
+                class="navbar-toggler"
+                style="float: right"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbarLight"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- D. Offcanvas -->
+          <div
+            class="offcanvas offcanvas-end"
+            tabindex="-1"
+            id="offcanvasNavbarLight"
+            data-bs-scroll="true"
+            style="max-width: 50vw"
+          >
+            <!-- Offcanvas Header -->
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasTitle">
+                Welcome Demo User
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
+            </div>
+            <!-- Offcanvas Body -->
+            <div class="offcanvas-body">
+              <!-- Login Div -->
+              <div
+                id="loginlogout"
+                class="row d-flex d-flex justify-content-center align-items-center"
+              >
+                <form id="LoginForm">
+                  <!--  Mobile No. Input-->
+                  <div class="col-12 mb-2">
+                    <div class="form-group">
+                      <label for="LoginMobileNo"><b>Mobile No: </b></label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="LoginMobileNo"
+                        placeholder="10-digit Mobile No."
+                        pattern="[789][0-9]{9}"
+                        required
+                      />
+                      <div class="invalid-feedback">
+                        This does not look like a valid 10-digit Mobile Number
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Login Btn  -->
+                  <div class="d-grid col-10 mx-auto">
+                    <button
+                      type="button"
+                      id="LoginUserBtn"
+                      class="btn btn-primary"
+                      onclick="Login()"
+                    >
+                      Login
+                    </button>
+                  </div>
+
+                  <!--  Please login text -->
+                  <div class="col-12">
+                    <div class="form-text" style="font-size: small">
+                      <i>Please Login to save and retrieve patients</i>
+                    </div>
+                  </div>
+
+                  <!-- Register Link -->
+                  <div class="col-sm-12">
+                    <div class="form-text text-end">
+                      New User?
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link p-0"
+                        data-bs-toggle="modal"
+                        data-bs-target="#RegisterModal"
+                      >
+                        Register
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!------------------------------------------------ Appt List ------------------------------------------->
+    <div
+      id="ApptNameList"
+      class="px-4 mx-auto collapse"
+      style="max-width: 800px"
+    >
+      <div class="row border rounded-5 bg-light p-3">
+        <!-- Title and Filters -->
+        <div class="col-sm-12 mb-3">
+          <h4 class="text-center border-bottom pb-2">Appointment List</h4>
+          <input
+            type="text"
+            id="UserID"
+            value="66f98451e7c85d5b786bfd98"
+            hidden
+          />
+          <div class="spinner-border" id="spinner" role="status" hidden></div>
+          <!------------------------- Filters Row --------------------------->
+          <div class="row g-3" style="font-size: 0.8rem">
+            <!-- Date Filter -->
+            <div class="col-sm-4">
+              <!-- Time Frame Select -->
+              <div class="row gx-1 gy-2 align-items-center">
+                <!-- Timeframe Label -->
+                <div class="col-4">
+                  <label for="TimeFrame" class="col-form-label"
+                    >Timeframe:</label
+                  >
+                </div>
+                <!-- Timeframe Select -->
+                <div class="col-8">
+                  <select
+                    id="TimeFrame"
+                    class="form-control"
+                    style="font-size: 0.8rem"
+                  >
+                    <option value="AllTime">All Time</option>
+                    <option value="Today">Today</option>
+                    <option value="ThisWeek">This Week</option>
+                    <option value="ThisMonth">This Month</option>
+                    <option value="LastMonth">Last Month</option>
+                    <option value="Last6Months">Last 6 Months</option>
+                    <option value="Custom">Custom</option>
+                  </select>
+                </div>
+                <!-- Start Date -->
+                <div class="col-6">
+                  <div class="form-group">
+                    <input
+                      type="date"
+                      name="StartDate"
+                      id="StartDate"
+                      class="form-control"
+                      placeholder="Start Date"
+                      style="font-size: 0.8rem"
+                      disabled
+                    />
+                    <div class="form-text m-0">
+                      <i>Start date</i>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Date -->
+                <div class="col-6">
+                  <div class="form-group">
+                    <input
+                      type="date"
+                      name="EndDate"
+                      id="EndDate"
+                      class="form-control"
+                      placeholder="End Date"
+                      style="font-size: 0.8rem"
+                      disabled
+                    />
+                    <div class="form-text m-0">
+                      <i>End date</i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Name Filter -->
+            <div class="col-sm-4">
+              <div class="row gx-1 align-items-center">
+                <!-- Patient Name Label -->
+                <div class="col-6">
+                  <label for="PatientNameFilter" class="col-form-label"
+                    >Search by Name:</label
+                  >
+                </div>
+                <!-- Patient Name Filter Input -->
+                <div class="col-6">
+                  <input
+                    id="PatientNameFilter"
+                    type="text"
+                    class="form-control"
+                    style="font-size: 0.8rem"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Appt Type Filter -->
+            <div class="col-sm-4">
+              <div class="row gx-1 align-items-center">
+                <!-- Appt Type Label -->
+                <div class="col-6">
+                  <label for="ApptTypeFilter" class="col-form-label"
+                    >Search by Appt:</label
+                  >
+                </div>
+                <!-- Patient Name Input -->
+                <div class="col-6">
+                  <input
+                    id="ApptTypeFilter"
+                    type="text"
+                    class="form-control"
+                    style="font-size: 0.8rem"
+                    onfocus="PopulateApptTypeSelect(this)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!------------------ Table  ----------->
+        <div class="col-sm-12 overflow-x-auto overflow-y-auto">
+          <div style="max-height: 60vh; overflow-y: auto">
+            <table
+              class="table table-hover table-sm table-bordered"
+              style="table-layout: fixed; font-size: 0.8rem; height: 0.6vh"
+            >
+              <thead class="text-center">
+                <tr>
+                  <th scope="col" width="0px" hidden></th>
+                  <th scope="col" width="80px">Date</th>
+                  <th scope="col" width="115px">Patient Name</th>
+                  <th scope="col" width="70px">Place</th>
+                  <th scope="col" width="100px">Appt Type</th>
+                  <th scope="col" width="250px">Details</th>
+                  <th scope="col" width="250px">Advice</th>
+                  <th scope="col" width="50px">Fees</th>
+                  <th scope="col" width="150px">Comment</th>
+                </tr>
+              </thead>
+              <tbody
+                id="ApptListTable"
+                class="text-center"
+                style="font-size: 0.8rem"
+              ></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!----------- Column Display Row--------->
+        <div class="row g-3 mb-1" style="font-size: 0.8rem">
+          <!-- Columns to display Text -->
+          <div class="col-sm-12">
+            <div class="form-text">
+              <i>Columns to Display: </i>
+
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="DateCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="DateCheckBox"
+                  >Date</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="PatientNameCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="PatientNameCheckBox"
+                  >Name</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="PlaceCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="PlaceCheckBox"
+                  >Place</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="ApptTypeCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="ApptTypeCheckBox"
+                  >Appt Type</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="DetailsCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="DetailsCheckBox"
+                  >Details</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="AdviceCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="AdviceCheckBox"
+                  >Advice</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="FeesCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="FeesCheckBox"
+                  >Fees</label
+                >
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="CommentCheckBox"
+                  checked
+                />
+                <label class="form-check-label" for="CommentCheckBox"
+                  >Comment</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!---------------------------------------------------- Appt Form ----------------------------------------------->
+    <form
+      id="ApptForm"
+      class="needs-validation p-3 mx-auto"
+      novalidate
+      style="max-width: 800px"
+    >
+      <!-------------- I. Appt Info ---------------------------->
+      <div
+        class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-3"
+        id="ApptInfoHeading"
+      >
+        <!-- R0 - Title - Appointments -->
+        <div class="col-sm-12">
+          <h4 class="text-center border-bottom pb-2">
+            Appointments
+            <a
+              class="btn btn-link"
+              style="font-size: small; float: right"
+              onclick="FormReset()"
+              >Reset Form</a
+            >
+          </h4>
+          <input
+            type="text"
+            id="UserID"
+            value="66f98451e7c85d5b786bfd98"
+            hidden
+          />
+        </div>
+
+        <!-- R1 - Calender, Appointment Date -->
+        <div class="col-sm-12">
+          <div class="row gy-2">
+            <!-- Calender -->
+            <div class="col-12">
+              <div
+                class="d-flex align-items-center justify-content-center p-3 py-6"
+                style="font-size: 10em"
+                role="img"
+                aria-label="Calendar3 - large preview"
+              >
+                <svg width="0.8em" height="0.8em" viewBox="0 0 16 16">
+                  <path
+                    d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"
+                  ></path>
+                  <path
+                    d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Appt Date -->
+            <div class="col-12 mb-4">
+              <div class="d-flex align-items-center justify-content-center">
+                <div class="form-group">
+                  <label for="ApptDate">Appointment Date*</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="ApptDate"
+                    onchange="ApptDateSelect()"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- R2&3 - Place Div Row , Add Place Row -->
+        <div class="col-sm-12 border rounded-3 p-3">
+          <div class="row gx-1">
+            <!-- R2 - Place Div Row (Place Title, Patient Div Rows) -->
+            <div class="col-12 p-3 mb-2 collapse" id="PlaceRow" hidden></div>
+
+            <!-- R3 - Add Place Row (Add Place Input, Add Place Btn)-->
+            <div class="col-12 collapse" id="AddPlaceRow">
+              <div class="row gx-2">
+                <!-- Add Place Input -->
+                <div class="col-8">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="PlaceName"
+                      placeholder="Please enter name"
+                      required
+                      list="OPDPlaces"
+                      disabled
+                    />
+                    <datalist id="OPDPlaces">
+                      <option value="Saifee OPD - Polyclinic"></option>
+                      <option value="Dad Cabin Saifee"></option>
+                      <option value="DH OPD"></option>
+                      <option value="Saifee ICU"></option>
+                      <option value="Saifee Casualty"></option>
+                      <option value="Saifee Dental"></option>
+                    </datalist>
+                    <label for="PlaceName">Place*</label>
+                  </div>
+                </div>
+                <!-- Add Place Button -->
+                <div
+                  class="d-flex col-4 justify-content-center align-items-center"
+                >
+                  <div class="d-grid col-10 mx-auto">
+                    <button
+                      type="button"
+                      id="AddPlaceBtn"
+                      class="btn btn-sm btn-primary"
+                      onclick="AddPlace()"
+                    >
+                      Add Place
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- R4 - Save Btn -->
+        <div class="d-grid col-10 mx-auto">
+          <!-- Incomplete msg Div -->
+          <div
+            class="form-text text-danger text-center"
+            id="IncompleteDataWarn"
+          ></div>
+
+          <!-- Save to DB Btn -->
+          <button
+            class="btn btn-success"
+            type="button"
+            id="SubmitBtn"
+            onclick="SaveApptToDB()"
+          >
+            Save Appointments to Database
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!---------------------------------------------------- Toasts --------------------------------------------->
+    <div class="toast-container position-fixed top-0 start-0 p-3">
+      <!-- 1. Saved Failed Toast -->
+      <div id="SavedFailToast" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="FailedToastMsg">
+            Some Essential Data is missing or invalid.
+          </div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 2. Saved Successfully Toast -->
+      <div id="SavedSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="SuccessToastMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 3. Delete Successfully Toast -->
+      <div id="DeleteSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="DeleteSuccessToastMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 5. Already Registered Toast -->
+      <div id="AlreadyRegisToast" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="UserAlreadyRegisMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 6. New User Registered Toast -->
+      <div id="NewRegisToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="NewRegisMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 7. Login Fail Toast -->
+      <div id="LoginFailToast" class="toast align-items-center">
+        <div class="d-flex bg-danger-subtle">
+          <div class="toast-body" id="LoginFailMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 8. Login Success Toast -->
+      <div id="LoginSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="LoginSuccessMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      <!-- 9. Logout Success Toast -->
+      <div id="LogoutSuccessToast" class="toast align-items-center">
+        <div class="d-flex bg-success-subtle">
+          <div class="toast-body" id="LogoutSuccessMsg"></div>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!------------------------------------------------ Register Modal ----------------------------------------->
+    <div
+      class="modal fade"
+      id="RegisterModal"
+      tabindex="-1"
+      aria-labelledby="registerModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog .modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">Register New User</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="Register" class="row gx-1 gy-2">
+              <!--  User Name Input-->
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="username"><b>Name: </b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    placeholder="Please enter your user name"
+                    required
+                  />
+                  <div class="invalid-feedback">Name is required!</div>
+                </div>
+              </div>
+
+              <!--  User Name Input-->
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="RegisMobileNo"><b>Mobile No: </b></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="RegisMobileNo"
+                    placeholder="Please enter your Mobile No."
+                    pattern="[789][0-9]{9}"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    This does not look like a valid 10-digit Mobile Number
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="Register()">
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!------------------------------------------------ Edit Appt Modal ----------------------------------------->
+    <div
+      class="modal fade"
+      id="EditApptModal"
+      tabindex="-1"
+      aria-labelledby="EditApptModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog .modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5 mx-auto"><span id="PatientNameEdit"></span> - <span id="ApptDateEdit"></span></h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="EditAppt" class="row gx-1 gy-2">
+              <!--  Place Name Input-->
+              <div class="col-12" hidden>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    id="ApptIDEdit"
+                  />
+                </div>
+              </div>
+              <!--  Place Name Input-->
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="PlaceEdit">Place*</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="PlaceEdit"
+                    required
+                    list="OPDPlaces"
+                  />
+                  <div class="invalid-feedback">Place Name is required!</div>
+                </div>
+              </div>
+
+              <!--  Appt Type Input-->
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="ApptTypeEdit">Appt Type*</label>
+                  <input
+                    class="form-control"
+                    id="ApptTypeEdit"
+                    onfocus="PopulateApptTypeSelect(this)"
+                    required
+                  />
+                  <div class="invalid-feedback">Please Select Appt Type</div>
+                </div>
+              </div>
+
+              <!--  Details Input-->
+              <div class="col-12">
+                <div class="form-floating">
+                  <textarea
+                    id="DetailsEdit"
+                    class="form-control"
+                    placeholder="Details"
+                    oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                  ></textarea>
+                  <label for="DetailsEdit">Details</label>
+                </div>
+              </div>
+
+              <!--  Advice Input-->
+              <div class="col-12">
+                <div class="form-floating">
+                  <textarea
+                    id="AdviceEdit"
+                    class="form-control"
+                    placeholder="Advice"
+                    oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                  ></textarea>
+                  <label for="AdviceEdit">Advice</label>
+                </div>
+              </div>
+
+              <!--  Fees Input-->
+              <div class="col-3">
+                <div class="form-group">
+                  <label for="FeesEdit">Fees</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="FeesEdit"
+                  />
+                </div>
+              </div>
+
+              <!--  Comment Input-->
+              <div class="col-9">
+                <div class="form-group">
+                  <label for="CommentEdit">Comment</label>
+                  <input
+                    class="form-control"
+                    id="CommentEdit"
+                  />
+                </div>
+              </div>
+
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="UpdateAppt()"
+            >
+              Update
+            </button>
+            <button type="button" class="btn btn-danger" onclick="DeleteAppt()">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-------------------------------------------------Scripts & CDN ------------------------------------------->
+    <!-- MainAppt.js Script -->
+    <script src="js/mainappt.js"></script>
+
+    <!-- CRUDApptApp.js Script -->
+    <script src="js/CRUDAppt.js"></script>
+
+    <!-- PopulateSelectsAppt Script -->
+    <script src="./js/PopulateSelectsAppt.js"></script>
+
+    <!-- Bootstrap Script -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

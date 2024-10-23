@@ -1,0 +1,282 @@
+<div class="row gx-1 gy-2 border-bottom mb-3">
+  <!-- R2- Sr1 - Place Title -->
+  <div class="col-12">
+    <h5 id="TitlePlace1">
+      <u>Saifee ICU</u>
+      <button
+        type="button"
+        class="btn btn-danger btn-sm rounded-5"
+        onclick="confirm('Delete This Place?') ? this.parentElement.parentElement.parentElement.remove() : false"
+        style="float: right"
+      >
+        X
+      </button>
+    </h5>
+  </div>
+
+  <!-- R2 -Sr2 - Patient Table Row -->
+  <div class="col-12" style="overflow: auto">
+    <table
+      class="table table-hover table-sm table-bordered"
+      style="width: 674px; table-layout: fixed; font-size: 0.9rem"
+    >
+      <thead class="text-center">
+        <tr>
+          <th scope="col" width="0%" hidden=""></th>
+          <th scope="col" width="20%">Name</th>
+          <th scope="col" width="15%">Appt Type</th>
+          <th scope="col" width="30%">Details</th>
+          <th scope="col" width="20%">Advice</th>
+          <th scope="col" width="10%">Fees</th>
+          <th scope="col" width="10%">Cash?</th>
+          <th scope="col" width="15%"></th>
+        </tr>
+      </thead>
+      <tbody id="TableBody1">
+        <tr>
+          <td hidden="">66f55c50fb67c90951c750d1</td>
+          <td>Roshini Iyer</td>
+          <td>Dressing</td>
+          <td>aaa</td>
+          <td>aaa</td>
+          <td>123</td>
+          <td>111</td>
+          <td>
+            <button type="button" class="btn btn-warning btn-sm me-1">✎</button
+            ><button type="button" class="btn btn-danger btn-sm">X</button>
+          </td>
+        </tr>
+        <tr>
+          <td hidden="">66f98a2f529304e7688848cc</td>
+          <td>Kantibai</td>
+          <td>Biopsy</td>
+          <td>bbb</td>
+          <td>bbbb</td>
+          <td>123</td>
+          <td>111</td>
+          <td>
+            <button type="button" class="btn btn-warning btn-sm me-1">✎</button
+            ><button type="button" class="btn btn-danger btn-sm">X</button>
+          </td>
+        </tr>
+        <tr>
+          <td hidden=""><input id="ID1" /></td>
+          <td>
+            <select
+              id="Name1"
+              class="form-control d-flex"
+              style="font-size: 0.8rem"
+            >
+              <option value="">Select</option>
+              <option
+                value="66f55c50fb67c90951c750d1"
+                title="65/Female Dx: Ca Unknown Primary with neck nodes"
+              >
+                Roshini Iyer
+              </option>
+              <option value="66f98a2f529304e7688848cc" title="12/Male Dx: ">
+                Kantibai
+              </option>
+              <option value="66f98eaaaeb1475085a11fcd" title="12/Male Dx: ">
+                some one
+              </option>
+            </select>
+          </td>
+          <td>
+            <input
+              id="ApptType1"
+              class="form-control d-flex"
+              style="font-size: 0.8rem"
+              list="ApptType1datalist"
+            /><datalist id="ApptType1datalist">
+              <option value="First Visit"></option>
+              <option value="Routine FU"></option>
+              <option value="Emergency FU"></option>
+              <option value="Dressing"></option>
+              <option value="Sx Explain"></option>
+              <option value="Biopsy"></option>
+            </datalist>
+          </td>
+          <td>
+            <textarea
+              id="Details1"
+              class="form-control d-flex"
+              placeholder="Details"
+              oninput='this.style.height = "35px";this.style.height = this.scrollHeight + 3 + "px"'
+              style="font-size: 0.8rem; height: 36px"
+            ></textarea>
+          </td>
+          <td>
+            <textarea
+              id="Advice1"
+              class="form-control d-flex"
+              placeholder="Advice"
+              oninput='this.style.height = "35px";this.style.height = this.scrollHeight + 3 + "px"'
+              style="font-size: 0.8rem; height: 36px"
+            ></textarea>
+          </td>
+          <td>
+            <input
+              id="Fees1"
+              class="form-control d-flex"
+              type="text"
+              style="font-size: 0.8rem"
+            />
+          </td>
+          <td>
+            <input
+              id="PT1"
+              class="form-control d-flex"
+              type="text"
+              style="font-size: 0.8rem"
+            />
+          </td>
+          <td class="d-flex col-12 justify-content-center align-items-center">
+            <button
+              type="button"
+              class="btn btn-success btn-sm rounded-5"
+              id="Btn1"
+            >
+              Add
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row gx-1 gy-2 border-bottom mb-3">
+  <!-- R2- Sr1 - Place Title -->
+  <div class="col-12">
+    <h5 id="TitlePlace2">
+      <u>DH OPD</u>
+      <button
+        type="button"
+        class="btn btn-danger btn-sm rounded-5"
+        onclick="confirm('Delete This Place?') ? this.parentElement.parentElement.parentElement.remove() : false"
+        style="float: right"
+      >
+        X
+      </button>
+    </h5>
+  </div>
+
+  <!-- R2 -Sr2 - Patient Table Row -->
+  <div class="col-12" style="overflow: auto">
+    <table
+      class="table table-hover table-sm table-bordered"
+      style="width: 674px; table-layout: fixed; font-size: 0.9rem"
+    >
+      <thead class="text-center">
+        <tr>
+          <th scope="col" width="0%" hidden=""></th>
+          <th scope="col" width="20%">Name</th>
+          <th scope="col" width="15%">Appt Type</th>
+          <th scope="col" width="30%">Details</th>
+          <th scope="col" width="20%">Advice</th>
+          <th scope="col" width="10%">Fees</th>
+          <th scope="col" width="10%">Cash?</th>
+          <th scope="col" width="15%"></th>
+        </tr>
+      </thead>
+      <tbody id="TableBody2">
+        <tr>
+          <td hidden="">66f98eaaaeb1475085a11fcd</td>
+          <td>some one</td>
+          <td>Dressing</td>
+          <td>ccc</td>
+          <td>ccc</td>
+          <td>1000</td>
+          <td>123</td>
+          <td>
+            <button type="button" class="btn btn-warning btn-sm me-1">✎</button
+            ><button type="button" class="btn btn-danger btn-sm">X</button>
+          </td>
+        </tr>
+        <tr>
+          <td hidden=""><input id="ID2" /></td>
+          <td>
+            <select
+              id="Name2"
+              class="form-control d-flex"
+              style="font-size: 0.8rem"
+            >
+              <option value="">Select</option>
+              <option
+                value="66f55c50fb67c90951c750d1"
+                title="65/Female Dx: Ca Unknown Primary with neck nodes"
+              >
+                Roshini Iyer
+              </option>
+              <option value="66f98a2f529304e7688848cc" title="12/Male Dx: ">
+                Kantibai
+              </option>
+              <option value="66f98eaaaeb1475085a11fcd" title="12/Male Dx: ">
+                some one
+              </option>
+            </select>
+          </td>
+          <td>
+            <input
+              id="ApptType2"
+              class="form-control d-flex"
+              list="ApptType2datalist"
+              style="font-size: 0.8rem"
+            /><datalist id="ApptType2datalist">
+              <option value="First Visit"></option>
+              <option value="Routine FU"></option>
+              <option value="Emergency FU"></option>
+              <option value="Dressing"></option>
+              <option value="Sx Explain"></option>
+              <option value="Biopsy"></option>
+            </datalist>
+          </td>
+          <td>
+            <textarea
+              id="Details2"
+              class="form-control d-flex"
+              placeholder="Details"
+              oninput='this.style.height = "35px";this.style.height = this.scrollHeight + 3 + "px"'
+              style="font-size: 0.8rem; height: 36px"
+            ></textarea>
+          </td>
+          <td>
+            <textarea
+              id="Advice2"
+              class="form-control d-flex"
+              placeholder="Advice"
+              oninput='this.style.height = "35px";this.style.height = this.scrollHeight + 3 + "px"'
+              style="font-size: 0.8rem; height: 36px"
+            ></textarea>
+          </td>
+          <td>
+            <input
+              id="Fees2"
+              class="form-control d-flex"
+              type="text"
+              style="font-size: 0.8rem"
+            />
+          </td>
+          <td>
+            <input
+              id="PT2"
+              class="form-control d-flex"
+              type="text"
+              style="font-size: 0.8rem"
+            />
+          </td>
+          <td class="d-flex col-12 justify-content-center align-items-center">
+            <button
+              type="button"
+              class="btn btn-success btn-sm rounded-5"
+              id="Btn2"
+            >
+              Add
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
