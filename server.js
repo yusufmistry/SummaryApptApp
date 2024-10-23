@@ -27,7 +27,7 @@ app.get("/ApptApp", (req, res) => {
 });
 
 /////////////////////////// POST and Get Routes (axios) for Users //////////////////////////////
-//Register
+//Register User
 app.post("/register", (req, res) => {
   const UserObj = req.body;
   const { username, MobileNo } = UserObj;
