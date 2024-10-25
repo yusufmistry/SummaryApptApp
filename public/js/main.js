@@ -95,21 +95,18 @@ function PrimaryEnabler() {
   PrimaryTumourDetailsBtn.disabled = false;
   PrimaryTumourDetails.hidden = false;
 
-
-
-  
   // Histopath Part
   const HistopathRow = document.getElementById("HistopathRow");
   const PrimaryHP = document.getElementById("PrimaryHP");
   const TNM = document.getElementById("TNM");
   // Resetting all input feilds of HP
-  const AllPrimaryHPInputs = PrimaryHP.querySelectorAll("input")
-  const AllPrimaryHPSelects = PrimaryHP.querySelectorAll("select")
-  const AllPrimaryHPData = [...AllPrimaryHPInputs,...AllPrimaryHPSelects]
+  const AllPrimaryHPInputs = PrimaryHP.querySelectorAll("input");
+  const AllPrimaryHPSelects = PrimaryHP.querySelectorAll("select");
+  const AllPrimaryHPData = [...AllPrimaryHPInputs, ...AllPrimaryHPSelects];
   AllPrimaryHPData.forEach((data) => {
-    data.value = ""
-    data.disabled = true
-  })
+    data.value = "";
+    data.disabled = true;
+  });
   //Hiding HP everytime onchange()
   HistopathRow.hidden = true;
   PrimaryHP.hidden = true;
@@ -118,7 +115,7 @@ function PrimaryEnabler() {
   if (SxType === "Wide Excision") {
     WideExcArr.forEach((col) => (col.hidden = false));
     bsCollapsePrimary.show();
-    AllPrimaryHPData.forEach(data => data.disabled = false)
+    AllPrimaryHPData.forEach((data) => (data.disabled = false));
     HistopathRow.hidden = false;
     PrimaryHP.hidden = false;
     TNM.hidden = false;
@@ -127,7 +124,7 @@ function PrimaryEnabler() {
   if (SxType === "Composite Resection") {
     CompResArr.forEach((col) => (col.hidden = false));
     bsCollapsePrimary.show();
-    AllPrimaryHPData.forEach(data => data.disabled = false)
+    AllPrimaryHPData.forEach((data) => (data.disabled = false));
     HistopathRow.hidden = false;
     PrimaryHP.hidden = false;
     TNM.hidden = false;
@@ -256,8 +253,8 @@ function NeckEnabler() {
   RNeckStructureBoxes.forEach((box) => (box.checked = false));
   LNeckLNBoxes.forEach((box) => (box.checked = false));
   LNeckStructureBoxes.forEach((box) => (box.checked = false));
-  RNeckExtentTagify.removeAllTags()
-  LNeckExtentTagify.removeAllTags()
+  RNeckExtentTagify.removeAllTags();
+  LNeckExtentTagify.removeAllTags();
 
   //Histopath Part
   const HistopathRow = document.getElementById("HistopathRow");
@@ -266,20 +263,20 @@ function NeckEnabler() {
   const TNM = document.getElementById("TNM");
 
   // Resetting HP
-  const RNodalYeild = document.getElementById("RNodalYeild")
-  const LNodalYeild = document.getElementById("LNodalYeild")
-  const RPositNodes = document.getElementById("RPositNodes")
-  const LPositNodes = document.getElementById("LPositNodes")
-  RNodalYeild.value = ""
-  LNodalYeild.value = ""
-  RPositNodes.value = ""
-  LPositNodes.value = ""
-  RNodalYeild.disabled = true
-  RPositNodes.disabled = true
-  LNodalYeild.disabled = true
-  LPositNodes.disabled = true
-  NodeHPEnabler("R")
-  NodeHPEnabler("L")
+  const RNodalYeild = document.getElementById("RNodalYeild");
+  const LNodalYeild = document.getElementById("LNodalYeild");
+  const RPositNodes = document.getElementById("RPositNodes");
+  const LPositNodes = document.getElementById("LPositNodes");
+  RNodalYeild.value = "";
+  LNodalYeild.value = "";
+  RPositNodes.value = "";
+  LPositNodes.value = "";
+  RNodalYeild.disabled = true;
+  RPositNodes.disabled = true;
+  LNodalYeild.disabled = true;
+  LPositNodes.disabled = true;
+  NodeHPEnabler("R");
+  NodeHPEnabler("L");
 
   //Hiding HP everytime onchange()
   HistopathRow.hidden = true;
@@ -290,8 +287,8 @@ function NeckEnabler() {
   if (NeckType === "Ipsilateral") {
     SameNeckDetails.hidden = false;
     bsCollapseNeck.show();
-    RNodalYeild.disabled = false
-    RPositNodes.disabled = false
+    RNodalYeild.disabled = false;
+    RPositNodes.disabled = false;
     HistopathRow.hidden = false;
     RNeckHP.hidden = false;
     TNM.hidden = false;
@@ -301,10 +298,10 @@ function NeckEnabler() {
     SameNeckDetails.hidden = false;
     OppositeNeckDetails.hidden = false;
     bsCollapseNeck.show();
-    RNodalYeild.disabled = false
-    RPositNodes.disabled = false
-    LNodalYeild.disabled = false
-    LPositNodes.disabled = false
+    RNodalYeild.disabled = false;
+    RPositNodes.disabled = false;
+    LNodalYeild.disabled = false;
+    LPositNodes.disabled = false;
     HistopathRow.hidden = false;
     RNeckHP.hidden = false;
     LNeckHP.hidden = false;
@@ -314,8 +311,8 @@ function NeckEnabler() {
   if (NeckType === "Contralateral") {
     OppositeNeckDetails.hidden = false;
     bsCollapseNeck.show();
-    LNodalYeild.disabled = false
-    LPositNodes.disabled = false
+    LNodalYeild.disabled = false;
+    LPositNodes.disabled = false;
     HistopathRow.hidden = false;
     LNeckHP.hidden = false;
     TNM.hidden = false;
@@ -499,7 +496,9 @@ function addInvestigation() {
   const type = document.getElementById("InvType");
   const site = document.getElementById("InvSite");
   const findings = document.getElementById("InvFindings");
-  const AddInvModal = bootstrap.Modal.getInstance(document.getElementById("AddInvModal"))
+  const AddInvModal = bootstrap.Modal.getInstance(
+    document.getElementById("AddInvModal")
+  );
 
   if (!type.value || !findings.value) {
     alert("Please enter relevant Investigation details");
@@ -528,8 +527,7 @@ function addInvestigation() {
       site.value = siteCell.innerText;
       findings.value = findingsCell.innerText;
       tableBody.removeChild(row);
-      AddInvModal.show()
-      
+      AddInvModal.show();
     };
     deleteCell.appendChild(editButton);
 
@@ -552,7 +550,7 @@ function addInvestigation() {
     site.value = "";
     date.value = "";
     findings.value = "";
-    AddInvModal.hide()
+    AddInvModal.hide();
   }
 }
 
@@ -572,6 +570,7 @@ populateDatalist("PNILVIlist", PNILVIArray);
 populateDatalist("margins", marginsArray);
 
 ////////////////////////// Lazy Load Background Videos & Init Tooltips ///////////////////
+let urldevmode = [];
 window.onload = function () {
   const videoBackground = document.getElementById("video-background");
   const video = videoBackground.querySelector("video");
@@ -592,6 +591,19 @@ window.onload = function () {
   const tooltipList = [...tooltipTriggerList].map(
     (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
   );
+
+  /////////////////////////// Get Base URL string ///////////////
+  axios
+    .get("http://localhost:5000/dev")
+    .then((response) => {
+      console.log(response.data);
+      if (response.data === "dev mode") {
+        urldevmode.push("http://localhost:5000/");
+      }
+    })
+    .catch((error) => urldevmode.push("https://summaryapp-trnb.onrender.com/"));
+
+  console.log(urldevmode);
 };
 
 ////////////////////////// Populate From from pt ///////////////////
@@ -600,7 +612,7 @@ function PopulateForm(patient) {
   const form = document.getElementById("primaryInfo");
   form.reset();
 
-  console.log(patient)
+  console.log(patient);
 
   //Putting the ID for update and delete purposes
   document.getElementById("PatientID").value = patient._id;
@@ -626,7 +638,9 @@ function PopulateForm(patient) {
     const type = document.getElementById("InvType");
     const site = document.getElementById("InvSite");
     const findings = document.getElementById("InvFindings");
-    const AddInvModal = bootstrap.Modal.getOrCreateInstance(document.getElementById("AddInvModal"))
+    const AddInvModal = bootstrap.Modal.getOrCreateInstance(
+      document.getElementById("AddInvModal")
+    );
 
     const AlldeleteBtns = tableBody.querySelectorAll("button");
     AlldeleteBtns.forEach((btn) => {
@@ -644,7 +658,7 @@ function PopulateForm(patient) {
           findings.value = row[3].innerText;
           btn.closest("tr").remove();
           findings.style.height = findings.scrollHeight + 3 + "px";
-          AddInvModal.show()
+          AddInvModal.show();
         };
       }
     });
@@ -733,7 +747,7 @@ function PopulateForm(patient) {
 function FormReset() {
   const form = document.getElementById("primaryInfo");
   form.reset();
-  form.classList.remove("was-validated")
+  form.classList.remove("was-validated");
   const InvTable = document.getElementById("InvTable");
   InvTable.innerHTML = "";
 
@@ -757,52 +771,72 @@ function FormReset() {
   SignSummaryDiv.html("");
 
   //Collapsing and hiding
-  bootstrap.Collapse.getOrCreateInstance(document.getElementById("PIExpanded"),{toggle: false}).hide()
-  bootstrap.Collapse.getOrCreateInstance(document.getElementById("FVExpanded"),{toggle: false}).hide()
-  bootstrap.Collapse.getOrCreateInstance(document.getElementById("RxExpanded"),{toggle: false}).hide()
-  bootstrap.Collapse.getOrCreateInstance(document.getElementById("flush-collapseOne"),{toggle: false}).hide()
-  bootstrap.Collapse.getOrCreateInstance(document.getElementById("flush-collapseTwo"),{toggle: false}).hide()
-  bootstrap.Collapse.getOrCreateInstance(document.getElementById("PrimaryTumourDetails"),{toggle: false}).hide()
-  bootstrap.Collapse.getOrCreateInstance(document.getElementById("NeckDetails"),{toggle: false}).hide()
+  bootstrap.Collapse.getOrCreateInstance(
+    document.getElementById("PIExpanded"),
+    { toggle: false }
+  ).hide();
+  bootstrap.Collapse.getOrCreateInstance(
+    document.getElementById("FVExpanded"),
+    { toggle: false }
+  ).hide();
+  bootstrap.Collapse.getOrCreateInstance(
+    document.getElementById("RxExpanded"),
+    { toggle: false }
+  ).hide();
+  bootstrap.Collapse.getOrCreateInstance(
+    document.getElementById("flush-collapseOne"),
+    { toggle: false }
+  ).hide();
+  bootstrap.Collapse.getOrCreateInstance(
+    document.getElementById("flush-collapseTwo"),
+    { toggle: false }
+  ).hide();
+  bootstrap.Collapse.getOrCreateInstance(
+    document.getElementById("PrimaryTumourDetails"),
+    { toggle: false }
+  ).hide();
+  bootstrap.Collapse.getOrCreateInstance(
+    document.getElementById("NeckDetails"),
+    { toggle: false }
+  ).hide();
 
-  const HistopathRow = document.getElementById("HistopathRow")
-  const PrimaryHP = document.getElementById("PrimaryHP")
-  const RNeckHP = document.getElementById("RNeckHP")
-  const LNeckHP = document.getElementById("LNeckHP")
-  HistopathRow.hidden = true
-  PrimaryHP.hidden = true
-  RNeckHP.hidden = true
-  LNeckHP.hidden = true
+  const HistopathRow = document.getElementById("HistopathRow");
+  const PrimaryHP = document.getElementById("PrimaryHP");
+  const RNeckHP = document.getElementById("RNeckHP");
+  const LNeckHP = document.getElementById("LNeckHP");
+  HistopathRow.hidden = true;
+  PrimaryHP.hidden = true;
+  RNeckHP.hidden = true;
+  LNeckHP.hidden = true;
 
   $("#SummaryDiv").hide("fast");
 
   console.log("Form has been reset!");
 }
 
-function RefreshSpyScroll(){
-  const SpyScrollEl = document.querySelector('[data-bs-spy="scroll"]')
-  bootstrap.ScrollSpy.getInstance(SpyScrollEl).refresh()
+function RefreshSpyScroll() {
+  const SpyScrollEl = document.querySelector('[data-bs-spy="scroll"]');
+  bootstrap.ScrollSpy.getInstance(SpyScrollEl).refresh();
 }
 
-function GetSign (){
-  const UserSign = document.getElementById("UserSign").value.trim()
-  const ChangeSign = document.getElementById("ChangeSign")
+function GetSign() {
+  const UserSign = document.getElementById("UserSign").value.trim();
+  const ChangeSign = document.getElementById("ChangeSign");
 
-  bootstrap.Modal.getOrCreateInstance('#ChangeSignModal').show()
+  bootstrap.Modal.getOrCreateInstance("#ChangeSignModal").show();
 
-  if (ChangeSign.value){
-    return
-  } else if (UserSign && UserSign != "undefined"){
-    ChangeSign.value = UserSign
+  if (ChangeSign.value) {
+    return;
+  } else if (UserSign && UserSign != "undefined") {
+    ChangeSign.value = UserSign;
   }
-
 }
 
 ///////////////////////Summary Dowlading Saving and Printing Functions////////////////////////
-function SaveAsDocx(){
-  const patientName = document.getElementById("patientName").value
+function SaveAsDocx() {
+  const patientName = document.getElementById("patientName").value;
   var summary = document.getElementById("SummaryContent").innerHTML;
-  var converted = htmlDocx.asBlob(summary, { orientation: 'portrait' });
+  var converted = htmlDocx.asBlob(summary, { orientation: "portrait" });
   saveAs(converted, `${patientName}.docx`);
 }
 
@@ -810,27 +844,29 @@ function SaveAsDocx(){
 function printSummary() {
   // Get the HTML content of the div
   const summary = document.getElementById("SummaryContent").innerHTML;
-  
+
   // Create a new window for printing
-  const printWindow = window.open('', '', 'height=1754px,width=1240px');
-  
+  const printWindow = window.open("", "", "height=1754px,width=1240px");
+
   // Add HTML and CSS styling for the print window
-  printWindow.document.write('<html><head><title>Case Summary</title>');
-  printWindow.document.write('<style>body { font-size: 14px; font-family: "Times New Roman", Times, serif; padding: 100 50 0 50}</style>');
-  printWindow.document.write('</head><body>');
-  
+  printWindow.document.write("<html><head><title>Case Summary</title>");
+  printWindow.document.write(
+    '<style>body { font-size: 14px; font-family: "Times New Roman", Times, serif; padding: 100 50 0 50}</style>'
+  );
+  printWindow.document.write("</head><body>");
+
   // Add the content to the print window
   printWindow.document.write(summary);
-  printWindow.document.write('</body></html>');
-  
+  printWindow.document.write("</body></html>");
+
   // Close the document to apply styles
   printWindow.document.close();
-  
+
   // Trigger the print dialog
   printWindow.print();
-  
+
   // Close the print window after printing
-  printWindow.onafterprint = function() {
+  printWindow.onafterprint = function () {
     printWindow.close();
   };
 }
