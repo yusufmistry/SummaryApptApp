@@ -166,7 +166,7 @@ app.post("/apptlist", (req, res) => {
 
 //Dev route
 app.get("/dev", (req, res) => {
-  res.send("All okay")
+  res.send("dev mode")
   console.log("Dev Mode...")
 })
 
