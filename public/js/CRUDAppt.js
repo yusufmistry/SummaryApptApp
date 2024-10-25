@@ -11,7 +11,7 @@ function GetApptList() {
     const UserIDObj = { userid: UserID };
 
     axios
-      .post("https://summaryapptapp.onrender.com/apptlist", UserIDObj)
+      .post("http://localhost:5000/apptlist", UserIDObj)
       .then((response) => {
         const ApptListArray = response.data;
 
@@ -95,7 +95,7 @@ function Register() {
     };
 
     axios
-      .post("https://summaryapptapp.onrender.com/register", UserObj)
+      .post("http://localhost:5000/register", UserObj)
       .then((response) => {
         if (response.data === "Already registered") {
           UserAlreadyRegisMsg = document.getElementById(
@@ -181,7 +181,7 @@ function Login() {
     const LoginObj = { MobileNo: LoginMobileNo };
 
     axios
-      .post("https://summaryapptapp.onrender.com/userlogin", LoginObj)
+      .post("http://localhost:5000/userlogin", LoginObj)
       .then((response) => {
         if (response.data === "Not found") {
           LoginFailMsg = document.getElementById(
@@ -343,7 +343,7 @@ function SaveApptToDB() {
         ApptObj["Comment"] = row.cells[6].innerText;
 
         axios
-          .post("https://summaryapptapp.onrender.com/saveAppt", ApptObj)
+          .post("http://localhost:5000/saveAppt", ApptObj)
           .then((response) => {
             console.log(response.data);
           })
@@ -390,7 +390,7 @@ function UpdateAppt() {
     };
 
     axios
-      .post("https://summaryapptapp.onrender.com/updateAppt", ApptObj)
+      .post("http://localhost:5000/updateAppt", ApptObj)
       .then((response) => {
         // Close the Modal
         const bsEditModal = document.getElementById("EditApptModal");
@@ -432,7 +432,7 @@ function DeleteAppt() {
     console.log(ApptObj);
 
     axios
-      .post("https://summaryapptapp.onrender.com/deleteAppt", ApptObj)
+      .post("http://localhost:5000/deleteAppt", ApptObj)
       .then((response) => {
         // Close the Modal
         const bsEditModal = document.getElementById("EditApptModal");

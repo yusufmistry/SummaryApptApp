@@ -149,6 +149,8 @@ function genSummary() {
     PostopNotes,
     RecoveryNotes,
     Subsequent,
+    LastUpdated,
+    TNMStage,
   } = UserInputsObj;
 
   // Other non-traditional user inputs
@@ -201,6 +203,7 @@ function genSummary() {
 
   //Summary Divs
   const NotEnoughInfoDiv = $("#not-enough-info");
+  const TodaysDateDiv = $("#TodaysDateDiv");
   const primaryInfoSummaryDiv = $("#primaryInfoSummaryDiv");
   const FVSummaryDiv = $("#FVSummaryDiv");
   const HOPISummaryDiv = $("#HOPISummaryDiv");
@@ -238,21 +241,6 @@ function genSummary() {
       default:
         return "th";
     }
-  }
-
-  //Last Updated Date
-  function TodaysDate() {
-    const date = new Date();
-    const FormattedDate =
-      date.getDate() +
-      "<sup>" +
-      getOrdinalSuffix(date.getDate()) +
-      "</sup> " +
-      date.toLocaleString("default", { month: "short" }) +
-      " " +
-      date.getFullYear();
-
-    return FormattedDate;
   }
 
   // Reset the form everytime genSummary is run
@@ -312,6 +300,10 @@ function genSummary() {
   } else {
     NotEnoughInfoDiv.hide();
 
+    //Todays Date Div
+    const TodaysDate = new Date();
+    TodaysDateDiv.html(`<b>Date: ${TodaysDate.toLocaleDateString()}</b>`);
+
     // Primary Info Div
     primaryInfoSummaryDiv.html(`
       <b>Patient Name: ${patientName} </b> <br>
@@ -368,7 +360,7 @@ function genSummary() {
         `${He} was advised ${RxType}. ${His} other work-up was essentially normal. <br><br>
       On ${ToDateString(RxDate)} ${he} underwent <b>` +
         (SxType === "Wide Excision"
-          ? "Wide Excision of"
+          ? "Wide Excision "
           : "Composite Resection (Wide Excision of") +
         (SxSide.value[0] ? " " + SxSide.value[0].value : "") + //Side
         (SxSite.value[0] ? " " + SxSite.value[0].value : "") + //Prmary Site
@@ -642,9 +634,9 @@ function genSummary() {
             "</b> nodes were positive for metastasis in the <b>" +
             (NeckType === "Contralateral"
               ? SxSide.value[0]
-                ? SxSide.value[0].value === "Right"
-                  ? "Left "
-                  : "Right "
+                ? SxSide.value[0].value === "Left"
+                  ? "Right "
+                  : "Left "
                 : ""
               : "") +
             (NeckType === "Bilateral" ? " Left" : "") +
@@ -666,7 +658,9 @@ function genSummary() {
               : "")
           : "") +
         (AddlCommentRNeckHP ? AddlCommentRNeckHP : "") +
-        (Tstage ? "<b>(pT" + Tstage + "N" + Nstage + ")</b>. " : "");
+        (Tstage ? "<b>(pT" + Tstage + "N" + Nstage + ")</b>. " : "") +
+        (TNMStage ? "<b>(Stage: " + TNMStage + ")</b>. " : "")
+
     } else {
       HistopathSummaryDiv[0].innerHTML = "";
     }
@@ -680,11 +674,16 @@ function genSummary() {
         : "") +
       "physiotherapy and regular follow up at this clinic." +
       `<br><br>We wish ${him} good health. Please do not hesitate to contact us for any further information.` +
-      `<br><br><b>Last Updated: ${TodaysDate()}</b>`;
+      (LastUpdated
+        ? `<br><br><b>Last Updated: ${ToDateString(LastUpdated)}</b>`
+        : "");
 
     // Sign Div
-    SignSummaryDiv[0].innerHTML =
-      "<b>Dr. Yusuf A Mistry (MDS, FHNO) <br> Head and Neck Cancer Surgeon <br> Saifee Hospital <br> 8425029477 </b> <br> <a href='yusufmistry@ymail.com'>yusufmistry@ymail.com</a>";
+    const UserSign = document.getElementById("UserSign").value.trim()
+    const FormattedUserSign = UserSign ? UserSign.replace(/\n/g, '<br>') : false
+    SignSummaryDiv[0].innerHTML = UserSign === "" || UserSign === "undefined" ? "<button type='button' class='btn btn-link' onclick='GetSign()'>Add Sign</button>" : "<b>" + FormattedUserSign + "</b>"
+    
+
   }
 
   // Show the Summary Div

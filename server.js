@@ -68,6 +68,16 @@ app.post("/userlogin", (req, res) => {
     });
 });
 
+//Update User Details
+app.post("/changesign", (req, res) => {
+  const UserObj = req.body
+  const UserID = UserObj.UserID
+  User.findByIdAndUpdate(UserID, {Sign: UserObj.Sign}, {new: true})
+  .then((user) => res.send(user))
+  .catch(err => res.send(err))
+})
+
+
 /////////////////////////// POST and Get Routes (axios) for User Patients //////////////////////////////
 
 //Get Patient List
@@ -86,7 +96,7 @@ app.post("/", (req, res) => {
   const PatientID = PatientDetails.PatientID;
 
   if (PatientID) {
-    Patient.findByIdAndUpdate(PatientID, PatientDetails)
+    Patient.findByIdAndUpdate(PatientID, PatientDetails, {new: true})
       .then((patient) =>
         res.send(`${patient.patientName} updated successfully`)
       )

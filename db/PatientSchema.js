@@ -97,7 +97,9 @@ const PatientSchema = new mongoose.Schema({
     LNeckStructureRemoved: [String],
     RInvolvedNodes: [String],
     LInvolvedNodes: [String],
-    Diagnosis: String
+    Diagnosis: String,
+    LastUpdated: String,
+    TNMStage: String
 })
 
 const Patient = mongoose.model('Patient', PatientSchema)

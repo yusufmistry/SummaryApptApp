@@ -28,6 +28,9 @@
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
 
+    <!-- HTML-Docx -->
+    <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.min.js"></script>
+
     <!-- Override CSS -->
     <link rel="stylesheet" href="./css/style.css" />
   </head>
@@ -120,7 +123,7 @@
               <!-- Login Div -->
               <div
                 id="loginlogout"
-                class="row d-flex d-flex justify-content-center align-items-center"
+                class="row d-flex justify-content-center align-items-center border mb-2"
               >
                 <form id="LoginForm">
                   <!--  Mobile No. Input-->
@@ -379,6 +382,11 @@
             value="66f98451e7c85d5b786bfd98"
             hidden
           />
+          <textarea
+            type="text"
+            id="UserSign" 
+            hidden
+          >Dr. John Doe (MS, MD)<br>Consultant Head and Neck Surgeon<br>Life Care Hospital<br>johndoe@gmail.com</textarea>
           <div class="spinner-border" id="spinner" role="status" hidden></div>
           <table class="table table-hover table-sm table-bordered">
             <thead class="text-center">
@@ -2016,10 +2024,12 @@
                       <option value=""></option>
                       <option value="Absent">Absent</option>
                       <option value="Present">Present</option>
-                      <option value="Present">Superficial</option>
-                      <option value="Present">Intrinsic</option>
-                      <option value="Present">Extrinsic</option>
-                      <option value="Present">Deep</option>
+                      <option value="Present-Superficial Muscles">
+                        Superficial
+                      </option>
+                      <option value="Present-Intrinsic">Intrinsic</option>
+                      <option value="Present-Extrinsic">Extrinsic</option>
+                      <option value="Present-Deep Muscles">Deep</option>
                     </select>
                   </div>
                 </div>
@@ -2044,7 +2054,9 @@
                   id="AddlCommentPrimHP"
                   placeholder="Additional Comments"
                 />
-                <label for="AddlCommentPrimHP">Additional Comments</label>
+                <label for="AddlCommentPrimHP"
+                  >Additional Comments if any...</label
+                >
               </div>
               <div class="form-text" style="font-size: 0.7rem">
                 Eg. <i>Additional revised medial margin was free</i>
@@ -2249,7 +2261,9 @@
                   id="AddlCommentRNeckHP"
                   placeholder="Additional Comments"
                 />
-                <label for="AddlCommentRNeckHP">Additional Comments</label>
+                <label for="AddlCommentRNeckHP"
+                  >Additional Comments if any...</label
+                >
               </div>
               <div class="form-text" style="font-size: 0.7rem">
                 <i>Any comments related to neck dissection HP</i>
@@ -2454,7 +2468,9 @@
                   id="AddlCommentLNeckHP"
                   placeholder="Additional Comments"
                 />
-                <label for="AddlCommentLNeckHP">Additional Comments</label>
+                <label for="AddlCommentLNeckHP"
+                  >Additional Comments if any...</label
+                >
               </div>
               <div class="form-text" style="font-size: 0.7rem">
                 <i>Any comments related to this neck dissection HP</i>
@@ -2491,6 +2507,8 @@
                     value=""
                     oninput=" AJCCNstage()"
                   />
+                  <span class="input-group-text bg-body-secondary">Stage</span>
+                  <input class="form-control" type="text" id="TNMStage" />
                 </div>
                 <div
                   class="form-text"
@@ -2533,30 +2551,40 @@
       </div>
 
       <!-------------- VI. Subsequent Follow-up ------------------->
-      <div class="row border rounded-5 bg-light px-3 pb-4 gx-1 gy-2 mb-3">
+      <div class="row border rounded-5 bg-light px-3 pb-4 gx-3 gy-2 mb-3">
         <!-- R0 - Title - Subsequent Follow-up -->
         <div class="col-sm-12">
           <h4 class="text-center border-bottom pb-2">Subsequent Follow-up</h4>
         </div>
 
-        <!-- DR1 MR1&2 - Subsequent Follow-up -->
-        <div class="col-sm-12 form-floating">
-          <textarea
-            id="Subsequent"
-            class="form-control"
-            data-bs-toggle="tooltip"
-            data-bs-title="He/She is advised..."
-            oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
-            placeholder="Subsequent"
-          ></textarea>
-          <label for="Subsequent">Subsequent Advice and Follow-up</label>
-          <div class="form-text">
-            Example:
-            <i
-              >Adjuvant Radiotherapy/Chemotherapy and referred to
-              Radiation/Medical Oncologist for the same</i
-            ><br />
-            <i>(Leave blank if no adjuvant/special instructions)</i>
+        <!-- DR1 MR1 - Subsequent Follow-up -->
+        <div class="col-sm-9">
+          <div class="form-floating">
+            <textarea
+              id="Subsequent"
+              class="form-control"
+              data-bs-toggle="tooltip"
+              data-bs-title="He/She is advised..."
+              oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+              placeholder="Subsequent"
+            ></textarea>
+            <label for="Subsequent">Subsequent Advice and Follow-up</label>
+            <div class="form-text">
+              Example:
+              <i
+                >Adjuvant RT and referred to Radiation Oncologist for the
+                same</i
+              ><br />
+              <i>(Leave blank if no adjuvant/special instructions)</i>
+            </div>
+          </div>
+        </div>
+
+        <!-- DR1 MR2 -->
+        <div class="col-sm-3">
+          <div class="form-floating">
+            <input type="date" class="form-control" id="LastUpdated" />
+            <label for="LastUpdated">Info Last Updated on</label>
           </div>
         </div>
       </div>
@@ -2612,21 +2640,24 @@
         <h4 class="text-center border-bottom pb-2">Summary</h4>
       </div>
 
+      <!-- Not enough info Div -->
+      <div id="not-enough-info" class="text-center text-danger">
+        There is not enough data to make a summary
+      </div>
+
       <div class="col-sm-12">
         <div
           class="container p-3 bg-white border"
           style="font-size: 14px; font-family: 'Times New Roman', Times, serif"
           id="SummaryContent"
         >
-          <h5 class="text-center"><u>CASE SUMMARY</u></h5>
+          <h5 style="text-align: center; font-size: 18px;"><u>CASE SUMMARY</u></h5>
 
-          <!-- Not enough info Div -->
-          <div id="not-enough-info" class="text-center text-danger">
-            There is not enough data to make a summary
-          </div>
+          <!-- 0. Todays Date Div-->
+          <div id="TodaysDateDiv" style="text-align: right; margin-bottom: 50px;"></div>
 
           <!-- 1. Primary Info Summary Div -->
-          <div id="primaryInfoSummaryDiv" class="mb-3"></div>
+          <div id="primaryInfoSummaryDiv" style="margin-bottom: 40px;"></div>
 
           <!-- 2. First Visit Summary Div -->
           <div id="FVSummaryDiv" class="mb-2"></div>
@@ -2644,11 +2675,17 @@
           <div id="HistopathSummaryDiv" class="mb-2"></div>
 
           <!-- 6. Subsequent Adv Summary Div -->
-          <div id="SubsequentSummaryDiv" class="mb-4"></div>
+          <div id="SubsequentSummaryDiv" class="mb-2"></div>
 
           <!-- 7. Contact Info and Signature Summary Div -->
-          <div id="SignSummaryDiv" style="text-align: right"></div>
+          <div id="SignSummaryDiv" style="text-align: right; margin-top: 50;" title="To edit go to the side-menu and click on 'Update User'"></div>
+
         </div>
+        <!-- Download as Docx, PDF, Print Btns -->
+        <div id="SavePrintDiv" style="display: flex; justify-content: center; margin: 20px;">
+          <button type="button" style="margin: 0 10px;" onclick="SaveAsDocx()">Save as .docx</button>
+          <button type="button" style="margin: 0 10px;" onclick="printSummary()">Print</button>
+         </div>
       </div>
     </div>
 
@@ -2802,7 +2839,7 @@
           <div class="modal-body">
             <form id="Register" class="row gx-1 gy-2">
               <!--  User Name Input-->
-              <div class="col-sm-12">
+              <div class="col-12">
                 <div class="form-group">
                   <label for="username"><b>Name: </b></label>
                   <input
@@ -2817,7 +2854,7 @@
               </div>
 
               <!--  User Name Input-->
-              <div class="col-sm-12">
+              <div class="col-12">
                 <div class="form-group">
                   <label for="RegisMobileNo"><b>Mobile No: </b></label>
                   <input
@@ -2833,6 +2870,26 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Signature -->
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="Sign"><b>Name, Designations & Sign</b></label>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="Sign"
+                    placeholder="Please Enter your Signature"
+                    oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"'
+                  ></textarea>
+                  <div class="form-text" style="font-size: 0.7rem">
+                    <i
+                      >Please Mention your Name, Designations and Sign the way
+                      you want it to appear in the summary</i
+                    >
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -2845,6 +2902,76 @@
             </button>
             <button type="button" class="btn btn-primary" onclick="Register()">
               Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!------------------------------------------------ Change Sign Modal ----------------------------------------->
+    <div
+      class="modal fade"
+      id="ChangeSignModal"
+      tabindex="-1"
+      aria-labelledby="ChangeSignModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog .modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5">Change Your Sign</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="ChangeSignForm" class="row gx-1 gy-2">
+              <!-- Signature -->
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="ChangeSign"
+                    ><b>Name, Designations & Sign</b></label
+                  >
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="ChangeSign"
+                    oninput="this.scrollHeight > 120 ? this.style.height = this.scrollHeight + 3 + 'px': this.style.height = '120px'"
+                    onfocus="GetSign()"
+                    style="font-size: 0.9rem; font-weight: 600; height: 120px"
+                    placeholder="Dr. John Doe (MS, MD)
+                    Consultant Head Neck Surgeon
+                    Life Care Hospital
+                    drjohndoe@gmail.com"
+                  ></textarea
+                  >
+                  <div class="form-text" style="font-size: 0.7rem">
+                    <i
+                      >Please Change your Name, Designations and Sign the way
+                      you want it to appear in the summary</i
+                    >
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="ChangeSign()"
+            >
+              Save
             </button>
           </div>
         </div>
@@ -2950,6 +3077,20 @@
       </div>
     </div>
 
+    <!------------------------------------------------ Footer -------------------------------------------------->
+    <footer>
+      <div
+        class="d-grid col-12 text-center text-bg-secondary mx-auto p-2"
+        style="font-size: 0.8rem"
+      >
+        &copy; Copyright 2024 Dr. Yusuf Mistry
+        <i
+          >For reporting bugs, suggesting features and queries contact me on
+          <u>yusufmistry@ymail.com</u></i
+        >
+      </div>
+    </footer>
+
     <!-------------------------------------------------Scripts & CDN ------------------------------------------->
     <!-- Datalists.js -->
     <script src="js/datalists.js"></script>
@@ -2963,6 +3104,9 @@
     <script src="js/summary.js"></script>
     <!-- CRUD Script -->
     <script src="js/CRUD.js"></script>
+
+    <!-- Filesaver JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Bootstrap Script -->
     <script

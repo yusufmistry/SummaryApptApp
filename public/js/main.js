@@ -5,7 +5,7 @@ function validateForm() {
   if (!form.checkValidity()) {
     form.classList.add("was-validated");
     FailedToastMsg = document.getElementById("FailedToastMsg").innerText =
-      "Some essential data is missing";
+      "Some essential data is missing or incorrect data is enetered";
     bootstrap.Toast.getOrCreateInstance(
       document.getElementById("SavedFailToast")
     ).show();
@@ -600,7 +600,7 @@ function PopulateForm(patient) {
   const form = document.getElementById("primaryInfo");
   form.reset();
 
-  console.log(patient);
+  console.log(patient)
 
   //Putting the ID for update and delete purposes
   document.getElementById("PatientID").value = patient._id;
@@ -733,6 +733,7 @@ function PopulateForm(patient) {
 function FormReset() {
   const form = document.getElementById("primaryInfo");
   form.reset();
+  form.classList.remove("was-validated")
   const InvTable = document.getElementById("InvTable");
   InvTable.innerHTML = "";
 
@@ -754,10 +755,82 @@ function FormReset() {
   HistopathSummaryDiv.html("");
   SubsequentSummaryDiv.html("");
   SignSummaryDiv.html("");
+
+  //Collapsing and hiding
+  bootstrap.Collapse.getOrCreateInstance(document.getElementById("PIExpanded"),{toggle: false}).hide()
+  bootstrap.Collapse.getOrCreateInstance(document.getElementById("FVExpanded"),{toggle: false}).hide()
+  bootstrap.Collapse.getOrCreateInstance(document.getElementById("RxExpanded"),{toggle: false}).hide()
+  bootstrap.Collapse.getOrCreateInstance(document.getElementById("flush-collapseOne"),{toggle: false}).hide()
+  bootstrap.Collapse.getOrCreateInstance(document.getElementById("flush-collapseTwo"),{toggle: false}).hide()
+  bootstrap.Collapse.getOrCreateInstance(document.getElementById("PrimaryTumourDetails"),{toggle: false}).hide()
+  bootstrap.Collapse.getOrCreateInstance(document.getElementById("NeckDetails"),{toggle: false}).hide()
+
+  const HistopathRow = document.getElementById("HistopathRow")
+  const PrimaryHP = document.getElementById("PrimaryHP")
+  const RNeckHP = document.getElementById("RNeckHP")
+  const LNeckHP = document.getElementById("LNeckHP")
+  HistopathRow.hidden = true
+  PrimaryHP.hidden = true
+  RNeckHP.hidden = true
+  LNeckHP.hidden = true
+
+  $("#SummaryDiv").hide("fast");
+
   console.log("Form has been reset!");
 }
 
 function RefreshSpyScroll(){
   const SpyScrollEl = document.querySelector('[data-bs-spy="scroll"]')
   bootstrap.ScrollSpy.getInstance(SpyScrollEl).refresh()
+}
+
+function GetSign (){
+  const UserSign = document.getElementById("UserSign").value.trim()
+  const ChangeSign = document.getElementById("ChangeSign")
+
+  bootstrap.Modal.getOrCreateInstance('#ChangeSignModal').show()
+
+  if (ChangeSign.value){
+    return
+  } else if (UserSign && UserSign != "undefined"){
+    ChangeSign.value = UserSign
+  }
+
+}
+
+///////////////////////Summary Dowlading Saving and Printing Functions////////////////////////
+function SaveAsDocx(){
+  const patientName = document.getElementById("patientName").value
+  var summary = document.getElementById("SummaryContent").innerHTML;
+  var converted = htmlDocx.asBlob(summary, { orientation: 'portrait' });
+  saveAs(converted, `${patientName}.docx`);
+}
+
+//Copied frm ChatGPT 3.5o
+function printSummary() {
+  // Get the HTML content of the div
+  const summary = document.getElementById("SummaryContent").innerHTML;
+  
+  // Create a new window for printing
+  const printWindow = window.open('', '', 'height=1754px,width=1240px');
+  
+  // Add HTML and CSS styling for the print window
+  printWindow.document.write('<html><head><title>Case Summary</title>');
+  printWindow.document.write('<style>body { font-size: 14px; font-family: "Times New Roman", Times, serif; padding: 100 50 0 50}</style>');
+  printWindow.document.write('</head><body>');
+  
+  // Add the content to the print window
+  printWindow.document.write(summary);
+  printWindow.document.write('</body></html>');
+  
+  // Close the document to apply styles
+  printWindow.document.close();
+  
+  // Trigger the print dialog
+  printWindow.print();
+  
+  // Close the print window after printing
+  printWindow.onafterprint = function() {
+    printWindow.close();
+  };
 }

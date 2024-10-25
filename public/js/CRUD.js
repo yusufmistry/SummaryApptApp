@@ -11,7 +11,7 @@ function GetPatientList() {
     const UserIDObj = { userid: UserID };
 
     axios
-      .post("https://summaryapptapp.onrender.com/patientlist", UserIDObj)
+      .post("http://localhost:5000/patientlist", UserIDObj)
       .then((response) => {
         const PatientList = response.data;
 
@@ -145,16 +145,18 @@ function SaveToDB() {
   UserInputsObj.AdditionalSitesSkin = AddlSkinTagify.value.map(
     (obj) => obj.value
   );
-  UserInputsObj.AdditionalPro = AddlProTagify.value.map((obj) => obj.value);
+  UserInputsObj.AdditionalPro = AddlProTagify.value.map(
+    (obj) => obj.value
+  );
   UserInputsObj.RNeckExtent = RNeckExtentTagify.value[0]
     ? RNeckExtentTagify.value[0].value
     : "";
   UserInputsObj.LNeckExtent = LNeckExtentTagify.value[0]
     ? LNeckExtentTagify.value[0].value
     : "";
-  UserInputsObj.ReconType = ReconTypeTagify.value[0]
-    ? ReconTypeTagify.value[0].value
-    : "";
+  UserInputsObj.ReconType = ReconTypeTagify.value.map(
+    (obj) => obj.value
+  );
 
   // 4. Pushing the checkboxes into UserInputObj
   //Neck Checkboxes
@@ -186,7 +188,7 @@ function SaveToDB() {
   UserInputsObj["PatientID"] = document.getElementById("PatientID").value;
 
   axios
-    .post("https://summaryapptapp.onrender.com/", UserInputsObj)
+    .post("http://localhost:5000/", UserInputsObj)
     .then((res) => {
       SuccessToastMsg = document.getElementById("SuccessToastMsg").innerText =
         res.data;
@@ -231,7 +233,7 @@ function DeletePatient(id, name) {
   }
 
   axios
-    .post("https://summaryapptapp.onrender.com/deletepatient", { id })
+    .post("http://localhost:5000/deletepatient", { id })
     .then((res) => {
       DeleteSuccessToastMsg = document.getElementById(
         "DeleteSuccessToastMsg"
@@ -252,13 +254,15 @@ function Register() {
   } else {
     const username = document.getElementById("username").value;
     const MobileNo = document.getElementById("RegisMobileNo").value;
+    const Sign = document.getElementById("Sign").value;
     const UserObj = {
       username,
       MobileNo,
+      Sign,
     };
 
     axios
-      .post("https://summaryapptapp.onrender.com/register", UserObj)
+      .post("http://localhost:5000/register", UserObj)
       .then((response) => {
         if (response.data === "Already registered") {
           UserAlreadyRegisMsg = document.getElementById(
@@ -271,23 +275,32 @@ function Register() {
           // On successfull registration
           const User1 = response.data;
 
-          // 1. Putting the id in a hidden input
-          const UserIDDiv = (document.getElementById("UserID").value =
-            User1._id);
+          // 1. Putting the id & sign in a hidden input
+          document.getElementById("UserID").value = User1._id
+          document.getElementById("UserSign").value = User1.Sign
+
+
 
           //  2. Changing WelcomeUser title
           const offcanvasTitle = (document.getElementById(
             "offcanvasTitle"
           ).innerText = `Welcome ${User1.username}`);
-
+        
           // 3. Changing loginlogout div to logout
           const loginlogout = document.getElementById("loginlogout");
+          loginlogout.innerHTML = "";
+
           const LogoutBtn = document.createElement("button");
-          LogoutBtn.className = "btn btn-link btn-sm";
+          LogoutBtn.className = "btn btn-link";
           LogoutBtn.textContent = "Logout";
           LogoutBtn.onclick = () => Logout();
-          loginlogout.innerHTML = "";
           loginlogout.appendChild(LogoutBtn);
+
+          const ChangeSignBtn = document.createElement("button")
+          ChangeSignBtn.className = "btn btn-link btn-sm float-end";
+          ChangeSignBtn.textContent = "Update User Sign";
+          ChangeSignBtn.onclick = () => GetSign()
+          loginlogout.appendChild(ChangeSignBtn)
 
           // 4. Hide register modal and reset form
           const RegisterModal = bootstrap.Modal.getInstance("#RegisterModal");
@@ -341,7 +354,7 @@ function Login() {
     const LoginObj = { MobileNo: LoginMobileNo };
 
     axios
-      .post("https://summaryapptapp.onrender.com/userlogin", LoginObj)
+      .post("http://localhost:5000/userlogin", LoginObj)
       .then((response) => {
         if (response.data === "Not found") {
           LoginFailMsg = document.getElementById(
@@ -354,9 +367,9 @@ function Login() {
           // On successfull Login
           const User1 = response.data;
 
-          // 1. Putting the id in a hidden input
-          const UserIDDiv = (document.getElementById("UserID").value =
-            User1._id);
+          // 1. Putting the id & sign in a hidden input
+          document.getElementById("UserID").value = User1._id
+          document.getElementById("UserSign").value = User1.Sign
 
           //  2. Changing WelcomeUser title
           const offcanvasTitle = (document.getElementById(
@@ -365,12 +378,19 @@ function Login() {
 
           // 3. Changing loginlogout div to logout
           const loginlogout = document.getElementById("loginlogout");
+          loginlogout.innerHTML = "";
+
           const LogoutBtn = document.createElement("button");
           LogoutBtn.className = "btn btn-link btn-sm";
           LogoutBtn.textContent = "Logout";
           LogoutBtn.onclick = () => Logout();
-          loginlogout.innerHTML = "";
           loginlogout.appendChild(LogoutBtn);
+
+          const ChangeSignBtn = document.createElement("button")
+          ChangeSignBtn.className = "btn btn-link btn-sm float-end";
+          ChangeSignBtn.textContent = "Update User Sign";
+          ChangeSignBtn.onclick = () => GetSign()
+          loginlogout.appendChild(ChangeSignBtn)
 
           // 5. Successfully registered toast
           LoginSuccessMsg = document.getElementById(
@@ -419,4 +439,34 @@ function Logout() {
   ).show();
 
   setTimeout(() => window.location.reload(true), 2000);
+}
+
+/////////////////////////// Update User Sign ///////////////////////////////////////
+function ChangeSign(){
+  const UserID = document.getElementById("UserID").value
+  const Sign = document.getElementById("ChangeSign").value
+  UserObj = {
+    UserID,
+    Sign
+  }
+
+  axios.post("http://localhost:5000/changesign", UserObj)
+  .then((response) => {
+    const User1 = response.data
+
+    // Putting the Changed sign in hidden User Sign input
+    const UserSign = document.getElementById("UserSign")
+    UserSign.value = User1.Sign
+
+    // Hiding the Modal
+    bootstrap.Modal.getInstance("#ChangeSignModal").hide()
+
+    //Re-Generate Summary with new Sign
+    genSummary()
+
+    // Success Toast
+    document.getElementById("SuccessToastMsg").innerText = `${User1.username}'s sign Updated Successfully`
+    bootstrap.Toast.getOrCreateInstance("#SavedSuccessToast").show()
+  })
+  .catch(err => console.log(err))
 }

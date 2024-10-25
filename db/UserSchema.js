@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    sign: String
+    Sign: String
 })
 
 const User = mongoose.model('User', UserSchema)

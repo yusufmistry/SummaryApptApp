@@ -178,7 +178,7 @@ function AJCCTstage() {
       text =
         "T2: Tumor ≤2cm but DOI >5mm & ≤10mm; Tumor >2cm & ≤4cm and DOI ≤10 mm";
       break;
-    case "3": 
+    case "3":
       text = "T3: Tumor > 4cm or <i>any</i> tumor with DOI > 10mm";
       break;
     case "4a":
@@ -194,6 +194,7 @@ function AJCCTstage() {
   }
 
   TNMTextTstage.innerHTML = text;
+  StageLogic();
 }
 
 function AJCCNstage() {
@@ -208,8 +209,7 @@ function AJCCNstage() {
       text = "N0: No regional lymph node metastasis";
       break;
     case "1":
-      text =
-        "N1: Metastasis in a single ipsilateral lymph node, ≤3cm and ENE-";
+      text = "N1: Metastasis in a single ipsilateral lymph node, ≤3cm and ENE-";
       break;
     case "2a":
       text =
@@ -234,4 +234,37 @@ function AJCCNstage() {
       text = "";
   }
   TNMTextNstage.innerHTML = text;
+  StageLogic();
+}
+
+//////////////////////////////// Stage Logic ///////////////////////////////////////
+function StageLogic() {
+  const TNMStage = document.getElementById("TNMStage");
+
+  const Tstage = document.getElementById("Tstage").value;
+  const Nstage = document.getElementById("Nstage").value;
+
+  let stage;
+
+  Nstage === "3a" || Nstage === "3b" || Nstage === "3"
+    ? (stage = "IVB")
+    : Tstage === "4b"
+    ? (stage = "IVB")
+    : Nstage === "2a" || Nstage === "2b" || Nstage === "2c" || Nstage === "2"
+    ? (stage = "IVA")
+    : Tstage === "4a"
+    ? (stage = "IVA")
+    : Nstage === "1"
+    ? (stage = "III")
+    : Tstage === "3"
+    ? (stage = "III")
+    : Tstage === "2"
+    ? (stage = "II")
+    : Tstage === "1"
+    ? (stage = "I")
+    : Tstage === "is"
+    ? (stage = "0")
+    : (stage = "x");
+
+  TNMStage.value = stage;
 }
