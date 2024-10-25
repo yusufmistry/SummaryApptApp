@@ -27,7 +27,7 @@ function GetPatientList() {
     const UserIDObj = { userid: UserID };
 
     axios
-      .post(url + "patientlist", UserIDObj)
+      .post(url[0] + "patientlist", UserIDObj)
       .then((response) => {
         const PatientList = response.data;
 
@@ -204,7 +204,7 @@ function SaveToDB() {
   UserInputsObj["PatientID"] = document.getElementById("PatientID").value;
 
   axios
-    .post(url + "", UserInputsObj)
+    .post(url[0] + "", UserInputsObj)
     .then((res) => {
       SuccessToastMsg = document.getElementById("SuccessToastMsg").innerText =
         res.data;
@@ -249,7 +249,7 @@ function DeletePatient(id, name) {
   }
 
   axios
-    .post(url + "deletepatient", { id })
+    .post(url[0] + "deletepatient", { id })
     .then((res) => {
       DeleteSuccessToastMsg = document.getElementById(
         "DeleteSuccessToastMsg"
@@ -278,7 +278,7 @@ function Register() {
     };
 
     axios
-      .post(url + "register", UserObj)
+      .post(url[0] + "register", UserObj)
       .then((response) => {
         if (response.data === "Already registered") {
           UserAlreadyRegisMsg = document.getElementById(
@@ -370,7 +370,7 @@ function Login() {
     const LoginObj = { MobileNo: LoginMobileNo };
 
     axios
-      .post(url + "userlogin", LoginObj)
+      .post(url[0] + "userlogin", LoginObj)
       .then((response) => {
         if (response.data === "Not found") {
           LoginFailMsg = document.getElementById(
@@ -466,7 +466,7 @@ function ChangeSign(){
     Sign
   }
 
-  axios.post(url + "changesign", UserObj)
+  axios.post(url[0] + "changesign", UserObj)
   .then((response) => {
     const User1 = response.data
 
