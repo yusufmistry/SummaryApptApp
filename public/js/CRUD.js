@@ -1,3 +1,19 @@
+/////////////////////////// Get Base URL string ///////////////
+let url = []
+axios.get("http://localhost:5000/dev")
+.then((response) => {
+  if (response.status == 200){
+    url.push("http://localhost:5000/")
+  }
+})
+.catch((error) => {
+  if (error.response.status == 404){
+    url.push("https://summaryapp-trnb.onrender.com/")
+  }
+})
+
+console.log(url)
+
 ////////////////////////// Get Patient List ///////////////////
 function GetPatientList() {
   const PatientNameList = document.getElementById("PatientNameList");
@@ -11,7 +27,7 @@ function GetPatientList() {
     const UserIDObj = { userid: UserID };
 
     axios
-      .post("http://localhost:5000/patientlist", UserIDObj)
+      .post(url + "patientlist", UserIDObj)
       .then((response) => {
         const PatientList = response.data;
 
@@ -188,7 +204,7 @@ function SaveToDB() {
   UserInputsObj["PatientID"] = document.getElementById("PatientID").value;
 
   axios
-    .post("http://localhost:5000/", UserInputsObj)
+    .post(url + "", UserInputsObj)
     .then((res) => {
       SuccessToastMsg = document.getElementById("SuccessToastMsg").innerText =
         res.data;
@@ -233,7 +249,7 @@ function DeletePatient(id, name) {
   }
 
   axios
-    .post("http://localhost:5000/deletepatient", { id })
+    .post(url + "deletepatient", { id })
     .then((res) => {
       DeleteSuccessToastMsg = document.getElementById(
         "DeleteSuccessToastMsg"
@@ -262,7 +278,7 @@ function Register() {
     };
 
     axios
-      .post("http://localhost:5000/register", UserObj)
+      .post(url + "register", UserObj)
       .then((response) => {
         if (response.data === "Already registered") {
           UserAlreadyRegisMsg = document.getElementById(
@@ -354,7 +370,7 @@ function Login() {
     const LoginObj = { MobileNo: LoginMobileNo };
 
     axios
-      .post("http://localhost:5000/userlogin", LoginObj)
+      .post(url + "userlogin", LoginObj)
       .then((response) => {
         if (response.data === "Not found") {
           LoginFailMsg = document.getElementById(
@@ -450,7 +466,7 @@ function ChangeSign(){
     Sign
   }
 
-  axios.post("http://localhost:5000/changesign", UserObj)
+  axios.post(url + "changesign", UserObj)
   .then((response) => {
     const User1 = response.data
 

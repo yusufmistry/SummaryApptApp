@@ -164,6 +164,12 @@ app.post("/apptlist", (req, res) => {
   .catch((err) => console.log(err));
 })
 
+//Dev route
+app.get("/dev", (req, res) => {
+  res.send("All okay")
+  console.log("Dev Mode...")
+})
+
 /////////////////////////////////// Mongoose MongoDB connection //////////////////////////////////////////////////
 mongoose
   .connect(process.env.DB_URI)
