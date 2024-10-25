@@ -1,16 +1,16 @@
 ////////////////////////////// Tagify Scripts ///////////////////////////
-// /* 1. Primary Site */
-// const SxSiteTagify = new Tagify(document.getElementById("SxSite"), {
-//   enforceWhitelist: true,
-//   mode: "select",
-//   whitelist: PrimarySitesArray,
-//   dropdown: {
-//     maxItems: 5,
-//     classname: "tags-look",
-//     enabled: 0,
-//     closeOnSelect: true,
-//   },
-// });
+/* 1. Primary Site */
+const SxSiteTagify = new Tagify(document.getElementById("SxSite"), {
+  enforceWhitelist: true,
+  mode: "select",
+  whitelist: PrimarySitesArray,
+  dropdown: {
+    maxItems: 5,
+    classname: "tags-look",
+    enabled: 0,
+    closeOnSelect: true,
+  },
+});
 
 /* 2. Primary Side */
 const SxSideTagify = new Tagify(document.getElementById("SxSide"), {
