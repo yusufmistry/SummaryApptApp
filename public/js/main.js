@@ -593,17 +593,17 @@ window.onload = function () {
   );
 
   /////////////////////////// Get Base URL string ///////////////
-  // axios
-  //   .get("http://localhost:5000/dev")
-  //   .then((response) => {
-  //     console.log(response.data);
-  //     if (response.data === "dev mode") {
-  //       urldevmode.push("http://localhost:5000/");
-  //     }
-  //   })
-  //   .catch((error) => urldevmode.push("https://summaryapp-trnb.onrender.com/"));
+  axios
+    .get("http://localhost:5000/dev")
+    .then((response) => {
+      console.log(response.data);
+      if (response.data === "dev mode") {
+        urldevmode.push("http://localhost:5000/");
+      }
+    })
+    .catch((error) => urldevmode.push("https://summaryapp-trnb.onrender.com/"));
 
-  // console.log(urldevmode);
+  console.log(urldevmode);
 };
 
 ////////////////////////// Populate From from pt ///////////////////
