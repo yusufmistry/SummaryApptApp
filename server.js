@@ -85,7 +85,7 @@ app.post("/patientlist", (req, res) => {
   const UserIDObj = req.body;
   const { userid } = UserIDObj;
 
-  Patient.find({ user: userid })
+  Patient.find({ user: userid }).sort({ updatedAt: -1 })
     .then((patients) => res.send(patients))
     .catch((err) => console.log(err));
 });

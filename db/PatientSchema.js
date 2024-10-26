@@ -101,7 +101,7 @@ const PatientSchema = new mongoose.Schema({
     LastUpdated: String,
     TNMStage: String,
     PrefixTNM: String
-})
+},{ timestamps: true })
 
 const Patient = mongoose.model('Patient', PatientSchema)
 
