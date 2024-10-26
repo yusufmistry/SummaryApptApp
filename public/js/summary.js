@@ -151,6 +151,7 @@ function genSummary() {
     Subsequent,
     LastUpdated,
     TNMStage,
+    PrefixTNM,
   } = UserInputsObj;
 
   // Other non-traditional user inputs
@@ -192,12 +193,14 @@ function genSummary() {
     .join(", ");
 
   //NeckHPCheckBoxes
-  const RInvolvedNodes = $("#RInvolvedNodes input:checked")
-    .get()
+  const RInvolvedNodesStr = Array.from(
+    document.getElementById("RInvolvedNodes").querySelectorAll("input:checked")
+  )
     .map((el) => el.value)
     .join(", ");
-  const LInvolvedNodes = $("#LInvolvedNodes input:checked")
-    .get()
+  const LInvolvedNodesStr = Array.from(
+    document.getElementById("LInvolvedNodes").querySelectorAll("input:checked")
+  )
     .map((el) => el.value)
     .join(", ");
 
@@ -612,8 +615,8 @@ function genSummary() {
             (RNeckExtent.value[0]
               ? " " + RNeckExtent.value[0].value + " </b>specimen. "
               : "") +
-            (RInvolvedNodes
-              ? " [Involved Level: <b>" + RInvolvedNodes + "</b>]. "
+            (RInvolvedNodesStr
+              ? " [Involved Level: <b>" + RInvolvedNodesStr + "</b>]. "
               : "") +
             (RNodeSize
               ? "[Size of largest node: <b>" + RNodeSize + "mm</b>]. "
@@ -643,8 +646,8 @@ function genSummary() {
             (LNeckExtent.value[0]
               ? " " + LNeckExtent.value[0].value + "</b> specimen. "
               : "") +
-            (LInvolvedNodes
-              ? " [Involved Level: <b>" + LInvolvedNodes + "</b>]. "
+            (LInvolvedNodesStr
+              ? " [Involved Level: <b>" + LInvolvedNodesStr + "</b>]. "
               : "") +
             (LNodeSize
               ? "[Size of largest node: <b>" + LNodeSize + "mm</b>]. "
@@ -657,10 +660,17 @@ function genSummary() {
               ? "[Distance(ECS): <b>" + LECSDistance + "mm</b>]. "
               : "")
           : "") +
-        (AddlCommentRNeckHP ? AddlCommentRNeckHP : "") +
-        (Tstage ? "<b>(pT" + Tstage + "N" + Nstage + ")</b>. " : "") +
-        (TNMStage ? "<b>(Stage: " + TNMStage + ")</b>. " : "")
-
+        (AddlCommentLNeckHP ? AddlCommentLNeckHP : "") +
+        (Tstage
+          ? "<b>(" +
+            (PrefixTNM ? PrefixTNM : "") +
+            "pT" +
+            Tstage +
+            "N" +
+            Nstage +
+            ")</b>. "
+          : "") +
+        (TNMStage ? "<b>(Stage: " + TNMStage + ")</b>. " : "");
     } else {
       HistopathSummaryDiv[0].innerHTML = "";
     }
@@ -679,11 +689,14 @@ function genSummary() {
         : "");
 
     // Sign Div
-    const UserSign = document.getElementById("UserSign").value.trim()
-    const FormattedUserSign = UserSign ? UserSign.replace(/\n/g, '<br>') : false
-    SignSummaryDiv[0].innerHTML = UserSign === "" || UserSign === "undefined" ? "<button type='button' class='btn btn-link' onclick='GetSign()'>Add Sign</button>" : "<b>" + FormattedUserSign + "</b>"
-    
-
+    const UserSign = document.getElementById("UserSign").value.trim();
+    const FormattedUserSign = UserSign
+      ? UserSign.replace(/\n/g, "<br>")
+      : false;
+    SignSummaryDiv[0].innerHTML =
+      UserSign === "" || UserSign === "undefined"
+        ? "<button type='button' class='btn btn-link' onclick='GetSign()'>Add Sign</button>"
+        : "<b>" + FormattedUserSign + "</b>";
   }
 
   // Show the Summary Div

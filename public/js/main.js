@@ -612,8 +612,6 @@ function PopulateForm(patient) {
   const form = document.getElementById("primaryInfo");
   form.reset();
 
-  console.log(patient);
-
   //Putting the ID for update and delete purposes
   document.getElementById("PatientID").value = patient._id;
 

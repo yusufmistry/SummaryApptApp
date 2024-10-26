@@ -99,7 +99,8 @@ const PatientSchema = new mongoose.Schema({
     LInvolvedNodes: [String],
     Diagnosis: String,
     LastUpdated: String,
-    TNMStage: String
+    TNMStage: String,
+    PrefixTNM: String
 })
 
 const Patient = mongoose.model('Patient', PatientSchema)

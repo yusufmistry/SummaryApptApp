@@ -86,12 +86,14 @@ function SaveToDB() {
   // 0. Pushing the user into the object
   const UserID = document.getElementById("UserID").value;
 
-  if (UserID === "66f98451e7c85d5b786bfd98"){
-    window.alert("You cannot save or edit patients as a demo user. However you can change the inputs and generate Summaries. Please Login to save your patients")
-    return false
+  if (UserID === "66f98451e7c85d5b786bfd98") {
+    window.alert(
+      "You cannot save or edit patients as a demo user. However you can change the inputs and generate Summaries. Please Login to save your patients"
+    );
+    return false;
   }
 
-  window.confirm("Save Changes to Database? (Cannot be undone!)")
+  window.confirm("Save Changes to Database? (Cannot be undone!)");
 
   UserInputsObj["user"] = UserID;
 
@@ -145,18 +147,14 @@ function SaveToDB() {
   UserInputsObj.AdditionalSitesSkin = AddlSkinTagify.value.map(
     (obj) => obj.value
   );
-  UserInputsObj.AdditionalPro = AddlProTagify.value.map(
-    (obj) => obj.value
-  );
+  UserInputsObj.AdditionalPro = AddlProTagify.value.map((obj) => obj.value);
   UserInputsObj.RNeckExtent = RNeckExtentTagify.value[0]
     ? RNeckExtentTagify.value[0].value
     : "";
   UserInputsObj.LNeckExtent = LNeckExtentTagify.value[0]
     ? LNeckExtentTagify.value[0].value
     : "";
-  UserInputsObj.ReconType = ReconTypeTagify.value.map(
-    (obj) => obj.value
-  );
+  UserInputsObj.ReconType = ReconTypeTagify.value.map((obj) => obj.value);
 
   // 4. Pushing the checkboxes into UserInputObj
   //Neck Checkboxes
@@ -177,12 +175,8 @@ function SaveToDB() {
     .get()
     .map((el) => el.value);
   //NeckHPCheckBoxes
-  UserInputsObj["RInvolvedNodes"] = $("#RInvolvedNodes input:checked")
-    .get()
-    .map((el) => el.value);
-  UserInputsObj["LInvolvedNodes"] = $("#LInvolvedNodes input:checked")
-    .get()
-    .map((el) => el.value);
+  UserInputsObj["RInvolvedNodes"] = Array.from(document.getElementById("RInvolvedNodes").querySelectorAll("input:checked")).map(el => el.value)
+  UserInputsObj["LInvolvedNodes"] = Array.from(document.getElementById("LInvolvedNodes").querySelectorAll("input:checked")).map(el => el.value)
 
   //5. Post req using axios (Note: Check for user and update is handled by server)
   UserInputsObj["PatientID"] = document.getElementById("PatientID").value;
@@ -205,8 +199,8 @@ function SaveToDB() {
         toggle: false,
       });
       bsCollapsePatientList.hide();
-      FormReset()
-      GetPatientList()
+      FormReset();
+      GetPatientList();
     })
     .catch((err) => {
       FailedToastMsg = document.getElementById(
@@ -216,7 +210,6 @@ function SaveToDB() {
         document.getElementById("SavedFailedToast")
       ).show();
     });
-
 }
 
 //////////////////////// Update Patient //////////////////////////////////////
@@ -224,12 +217,13 @@ function SaveToDB() {
 
 //////////////////////// Delete Patient  //////////////////////////////////////
 function DeletePatient(id, name) {
-
   const UserID = document.getElementById("UserID").value;
 
-  if (UserID === "66f98451e7c85d5b786bfd98"){
-    alert("As a demo user your changes will not be saved. Please Login to save your data")
-    return false
+  if (UserID === "66f98451e7c85d5b786bfd98") {
+    alert(
+      "As a demo user your changes will not be saved. Please Login to save your data"
+    );
+    return false;
   }
 
   axios
@@ -241,7 +235,7 @@ function DeletePatient(id, name) {
       bootstrap.Toast.getOrCreateInstance(
         document.getElementById("DeleteSuccessToast")
       ).show();
-      FormReset()
+      FormReset();
     })
     .catch((err) => console.log(err));
 }
@@ -276,16 +270,14 @@ function Register() {
           const User1 = response.data;
 
           // 1. Putting the id & sign in a hidden input
-          document.getElementById("UserID").value = User1._id
-          document.getElementById("UserSign").value = User1.Sign
-
-
+          document.getElementById("UserID").value = User1._id;
+          document.getElementById("UserSign").value = User1.Sign;
 
           //  2. Changing WelcomeUser title
           const offcanvasTitle = (document.getElementById(
             "offcanvasTitle"
           ).innerText = `Welcome ${User1.username}`);
-        
+
           // 3. Changing loginlogout div to logout
           const loginlogout = document.getElementById("loginlogout");
           loginlogout.innerHTML = "";
@@ -296,11 +288,11 @@ function Register() {
           LogoutBtn.onclick = () => Logout();
           loginlogout.appendChild(LogoutBtn);
 
-          const ChangeSignBtn = document.createElement("button")
+          const ChangeSignBtn = document.createElement("button");
           ChangeSignBtn.className = "btn btn-link btn-sm float-end";
           ChangeSignBtn.textContent = "Update User Sign";
-          ChangeSignBtn.onclick = () => GetSign()
-          loginlogout.appendChild(ChangeSignBtn)
+          ChangeSignBtn.onclick = () => GetSign();
+          loginlogout.appendChild(ChangeSignBtn);
 
           // 4. Hide register modal and reset form
           const RegisterModal = bootstrap.Modal.getInstance("#RegisterModal");
@@ -320,15 +312,18 @@ function Register() {
             "PatientNameList"
           ).innerHTML = "");
           const PatientList = document.getElementById("PatientList");
-          const bsCollapsePatientList = bootstrap.Collapse.getOrCreateInstance(PatientList, {
-            toggle: false,
-          });
+          const bsCollapsePatientList = bootstrap.Collapse.getOrCreateInstance(
+            PatientList,
+            {
+              toggle: false,
+            }
+          );
           bsCollapsePatientList.hide();
 
           //7. Update Login Status
           const LoginStatus = document.getElementById("LoginStatus");
           LoginStatus.innerHTML = `<i>Logged in as - ${User1.username}</i>`;
-          LoginStatus.classList = "bg-success-subtle"
+          LoginStatus.classList = "bg-success-subtle";
 
           //8. Close offcanvas
           const offcanvasNavbarLight = bootstrap.Offcanvas.getInstance(
@@ -337,7 +332,7 @@ function Register() {
           offcanvasNavbarLight.hide();
 
           //9. Form Reset
-          FormReset()
+          FormReset();
         }
       })
       .catch((err) => console.log(err));
@@ -368,8 +363,8 @@ function Login() {
           const User1 = response.data;
 
           // 1. Putting the id & sign in a hidden input
-          document.getElementById("UserID").value = User1._id
-          document.getElementById("UserSign").value = User1.Sign
+          document.getElementById("UserID").value = User1._id;
+          document.getElementById("UserSign").value = User1.Sign;
 
           //  2. Changing WelcomeUser title
           const offcanvasTitle = (document.getElementById(
@@ -386,11 +381,11 @@ function Login() {
           LogoutBtn.onclick = () => Logout();
           loginlogout.appendChild(LogoutBtn);
 
-          const ChangeSignBtn = document.createElement("button")
+          const ChangeSignBtn = document.createElement("button");
           ChangeSignBtn.className = "btn btn-link btn-sm float-end";
           ChangeSignBtn.textContent = "Update User Sign";
-          ChangeSignBtn.onclick = () => GetSign()
-          loginlogout.appendChild(ChangeSignBtn)
+          ChangeSignBtn.onclick = () => GetSign();
+          loginlogout.appendChild(ChangeSignBtn);
 
           // 5. Successfully registered toast
           LoginSuccessMsg = document.getElementById(
@@ -405,15 +400,18 @@ function Login() {
             "PatientNameList"
           ).innerHTML = "");
           const PatientList = document.getElementById("PatientList");
-          const bsCollapsePatientList = bootstrap.Collapse.getOrCreateInstance(PatientList, {
-            toggle: false,
-          });
+          const bsCollapsePatientList = bootstrap.Collapse.getOrCreateInstance(
+            PatientList,
+            {
+              toggle: false,
+            }
+          );
           bsCollapsePatientList.hide();
 
           //7. Update Login Status
           const LoginStatus = document.getElementById("LoginStatus");
-          LoginStatus.innerHTML = `<i>Logged in as - ${User1.username}</i>`
-          LoginStatus.classList = "bg-success-subtle"
+          LoginStatus.innerHTML = `<i>Logged in as - ${User1.username}</i>`;
+          LoginStatus.classList = "bg-success-subtle";
 
           //8. Close offcanvas
           const offcanvasNavbarLight = bootstrap.Offcanvas.getInstance(
@@ -422,7 +420,7 @@ function Login() {
           offcanvasNavbarLight.hide();
 
           //9. Form Reset
-          FormReset()
+          FormReset();
         }
       })
       .catch((err) => console.log(err));
@@ -442,31 +440,34 @@ function Logout() {
 }
 
 /////////////////////////// Update User Sign ///////////////////////////////////////
-function ChangeSign(){
-  const UserID = document.getElementById("UserID").value
-  const Sign = document.getElementById("ChangeSign").value
+function ChangeSign() {
+  const UserID = document.getElementById("UserID").value;
+  const Sign = document.getElementById("ChangeSign").value;
   UserObj = {
     UserID,
-    Sign
-  }
+    Sign,
+  };
 
-  axios.post(urldevmode[0] + "changesign", UserObj)
-  .then((response) => {
-    const User1 = response.data
+  axios
+    .post(urldevmode[0] + "changesign", UserObj)
+    .then((response) => {
+      const User1 = response.data;
 
-    // Putting the Changed sign in hidden User Sign input
-    const UserSign = document.getElementById("UserSign")
-    UserSign.value = User1.Sign
+      // Putting the Changed sign in hidden User Sign input
+      const UserSign = document.getElementById("UserSign");
+      UserSign.value = User1.Sign;
 
-    // Hiding the Modal
-    bootstrap.Modal.getInstance("#ChangeSignModal").hide()
+      // Hiding the Modal
+      bootstrap.Modal.getInstance("#ChangeSignModal").hide();
 
-    //Re-Generate Summary with new Sign
-    genSummary()
+      //Re-Generate Summary with new Sign
+      genSummary();
 
-    // Success Toast
-    document.getElementById("SuccessToastMsg").innerText = `${User1.username}'s sign Updated Successfully`
-    bootstrap.Toast.getOrCreateInstance("#SavedSuccessToast").show()
-  })
-  .catch(err => console.log(err))
+      // Success Toast
+      document.getElementById(
+        "SuccessToastMsg"
+      ).innerText = `${User1.username}'s sign Updated Successfully`;
+      bootstrap.Toast.getOrCreateInstance("#SavedSuccessToast").show();
+    })
+    .catch((err) => console.log(err));
 }
