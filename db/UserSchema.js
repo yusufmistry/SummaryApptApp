@@ -10,8 +10,9 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    Sign: String
-})
+    Sign: String,
+
+},{ timestamps: true })
 
 const User = mongoose.model('User', UserSchema)
 module.exports = User

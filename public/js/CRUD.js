@@ -119,7 +119,19 @@ function SaveToDB() {
   );
 
   // 2. Pushing the InvTable into te UserInputObj
-  const InvTableRows = document.getElementById("InvTable").innerHTML;
+  const tableBody = document.getElementById("InvTable");
+  const InvTableRows = [];
+  // Get all (sorted already) Invs
+    const AllInv = tableBody.querySelectorAll("tr");
+    AllInv.forEach((row) => {
+      const InvObj = {
+        date: row.cells[2].innerText,
+        type: row.cells[0].innerText,
+        site: row.cells[1].innerText,
+        findings: row.cells[3].innerText,
+      };
+      InvTableRows.push(InvObj);
+    });
   UserInputsObj["InvTableRows"] = InvTableRows;
 
   // 3. Pushing the Tagifys into UserInputObj

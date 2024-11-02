@@ -1,5 +1,12 @@
 const mongoose = require("mongoose")
 
+const InvSchema = new mongoose.Schema({
+    date: String,
+    type: String,
+    site: String,
+    findings: String,
+})
+
 const PatientSchema = new mongoose.Schema({
     user: { 
         type: mongoose.Schema.Types.ObjectId, 
@@ -90,7 +97,7 @@ const PatientSchema = new mongoose.Schema({
     PostopNotes: String,
     RecoveryNotes: String,
     Subsequent: String,
-    InvTableRows: String,
+    InvTableRows: [InvSchema],
     RNeckLNRemoved: [String],
     RNeckStructureRemoved: [String],
     LNeckLNRemoved: [String],

@@ -496,7 +496,7 @@ function addInvestigation() {
   const type = document.getElementById("InvType");
   const site = document.getElementById("InvSite");
   const findings = document.getElementById("InvFindings");
-  const AddInvModal = bootstrap.Modal.getInstance(
+  const AddInvModal = bootstrap.Modal.getOrCreateInstance(
     document.getElementById("AddInvModal")
   );
 
@@ -505,45 +505,85 @@ function addInvestigation() {
   } else {
     const tableBody = document.getElementById("InvTable");
 
-    const row = document.createElement("tr");
+    const InvArray = [];
 
-    const typeCell = document.createElement("td");
-    typeCell.innerText = type.value;
-    const siteCell = document.createElement("td");
-    !site ? (siteCell.innerText = "") : (siteCell.innerText = site.value);
-    const dateCell = document.createElement("td");
-    dateCell.innerText = date.value;
-    const findingsCell = document.createElement("td");
-    findingsCell.innerText = findings.value;
-
-    const deleteCell = document.createElement("td");
-    deleteCell.className = "d-grid gap-1";
-    const editButton = document.createElement("button");
-    editButton.textContent = "✎";
-    editButton.className = "btn btn-warning btn-sm";
-    editButton.onclick = () => {
-      type.value = typeCell.innerText;
-      date.value = dateCell.innerText;
-      site.value = siteCell.innerText;
-      findings.value = findingsCell.innerText;
-      tableBody.removeChild(row);
-      AddInvModal.show();
+    //Create new Inv Obj
+    const InvObj = {
+      date: date.value,
+      type: type.value,
+      site: site.value,
+      findings: findings.value,
     };
-    deleteCell.appendChild(editButton);
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "X";
-    deleteButton.className = "btn btn-danger btn-sm";
-    deleteButton.onclick = () =>
-      confirm("Delete Investigation?") ? tableBody.removeChild(row) : false;
-    deleteCell.appendChild(deleteButton);
+    InvArray.push(InvObj);
 
-    row.appendChild(typeCell);
-    row.appendChild(siteCell);
-    row.appendChild(dateCell);
-    row.appendChild(findingsCell);
-    row.appendChild(deleteCell);
-    tableBody.appendChild(row);
+    // get previous Invs
+    const PrevInv = tableBody.querySelectorAll("tr");
+    PrevInv.forEach((row) => {
+      const InvObj = {
+        date: row.cells[2].innerText,
+        type: row.cells[0].innerText,
+        site: row.cells[1].innerText,
+        findings: row.cells[3].innerText,
+      };
+
+      InvArray.push(InvObj);
+    });
+
+    InvArray.sort((a, b) => {
+      const Adate = new Date(a.date ? a.date : "1970-01-01");
+      const Bdate = new Date(b.date ? b.date : "1970-01-01");
+      return Adate - Bdate;
+    });
+
+    tableBody.innerHTML = "" //Reset Table first
+
+    //Populate New Sorted table
+    InvArray.forEach((inv) => {
+      
+      const row = document.createElement("tr");
+
+      const typeCell = document.createElement("td");
+      typeCell.innerText = inv.type;
+
+      const siteCell = document.createElement("td");
+      siteCell.innerText = inv.site
+
+      const dateCell = document.createElement("td");
+      dateCell.innerText = inv.date;
+
+      const findingsCell = document.createElement("td");
+      findingsCell.innerText = inv.findings
+
+      const deleteCell = document.createElement("td");
+      deleteCell.className = "d-grid gap-1";
+      const editButton = document.createElement("button");
+      editButton.textContent = "✎";
+      editButton.className = "btn btn-warning btn-sm";
+      editButton.onclick = () => {
+        type.value = typeCell.innerText;
+        date.value = dateCell.innerText;
+        site.value = siteCell.innerText;
+        findings.value = findingsCell.innerText;
+        tableBody.removeChild(row);
+        AddInvModal.show();
+      };
+      deleteCell.appendChild(editButton);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "X";
+      deleteButton.className = "btn btn-danger btn-sm";
+      deleteButton.onclick = () =>
+        confirm("Delete Investigation?") ? tableBody.removeChild(row) : false;
+      deleteCell.appendChild(deleteButton);
+
+      row.appendChild(typeCell);
+      row.appendChild(siteCell);
+      row.appendChild(dateCell);
+      row.appendChild(findingsCell);
+      row.appendChild(deleteCell);
+      tableBody.appendChild(row);
+    });
 
     // Reset Form //
     type.value = "";
@@ -627,11 +667,13 @@ function PopulateForm(patient) {
     }
   }
 
-  //Inputting Inv Table (Note: InvTable is stored as a string)
-  if (patient.InvTableRows) {
-    const tableBody = document.getElementById("InvTable");
-    tableBody.innerHTML = patient.InvTableRows;
+  //Inputting Inv Table
 
+  if (patient.InvTableRows[0]["0"] === "<") { //Backwards Compatibility
+    const tableBody = document.getElementById("InvTable");
+    const INVInnerHTML = Object.values(patient.InvTableRows[0]).join("")
+    tableBody.innerHTML = INVInnerHTML
+    
     const date = document.getElementById("InvDate");
     const type = document.getElementById("InvType");
     const site = document.getElementById("InvSite");
@@ -660,6 +702,63 @@ function PopulateForm(patient) {
         };
       }
     });
+        
+  } else {
+    const date = document.getElementById("InvDate");
+    const type = document.getElementById("InvType");
+    const site = document.getElementById("InvSite");
+    const findings = document.getElementById("InvFindings");
+    const AddInvModal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("AddInvModal")
+  );
+    const tableBody = document.getElementById("InvTable");
+
+    patient.InvTableRows.forEach((inv) => {
+      
+      const row = document.createElement("tr");
+
+      const typeCell = document.createElement("td");
+      typeCell.innerText = inv.type;
+
+      const siteCell = document.createElement("td");
+      siteCell.innerText = inv.site
+
+      const dateCell = document.createElement("td");
+      dateCell.innerText = inv.date;
+
+      const findingsCell = document.createElement("td");
+      findingsCell.innerText = inv.findings
+
+      const deleteCell = document.createElement("td");
+      deleteCell.className = "d-grid gap-1";
+      const editButton = document.createElement("button");
+      editButton.textContent = "✎";
+      editButton.className = "btn btn-warning btn-sm";
+      editButton.onclick = () => {
+        type.value = typeCell.innerText;
+        date.value = dateCell.innerText;
+        site.value = siteCell.innerText;
+        findings.value = findingsCell.innerText;
+        tableBody.removeChild(row);
+        AddInvModal.show();
+      };
+      deleteCell.appendChild(editButton);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "X";
+      deleteButton.className = "btn btn-danger btn-sm";
+      deleteButton.onclick = () =>
+        confirm("Delete Investigation?") ? tableBody.removeChild(row) : false;
+      deleteCell.appendChild(deleteButton);
+
+      row.appendChild(typeCell);
+      row.appendChild(siteCell);
+      row.appendChild(dateCell);
+      row.appendChild(findingsCell);
+      row.appendChild(deleteCell);
+      tableBody.appendChild(row);
+    });
+
   }
 
   //Inputting Tagifys
@@ -739,6 +838,12 @@ function PopulateForm(patient) {
 
   ///////////Re-generating Summary//////////
   genSummary();
+
+  ///////////Collapsing the MyPatients//////
+  const bsCollapsePatientList = new bootstrap.Collapse(PatientList, {
+    toggle: false,
+  });
+  bsCollapsePatientList.hide();
 }
 
 /////////////////// Form Reset Fn ///////////////////////////

@@ -319,3 +319,36 @@ function Logout() {
   const primaryInfo = document.getElementById("primaryInfo");
   primaryInfo.reset();
 }
+
+
+function AddfunctionalitytoEditDeleteButtonofInvTable(){
+  //This was before when InvTable was stored as a string
+  const date = document.getElementById("InvDate");
+    const type = document.getElementById("InvType");
+    const site = document.getElementById("InvSite");
+    const findings = document.getElementById("InvFindings");
+    const AddInvModal = bootstrap.Modal.getOrCreateInstance(
+      document.getElementById("AddInvModal")
+    );
+
+    const AlldeleteBtns = tableBody.querySelectorAll("button");
+    AlldeleteBtns.forEach((btn) => {
+      btn.type = "button";
+      if (btn.textContent === "X") {
+        btn.onclick = () =>
+          confirm("Delete Investigation?") ? btn.closest("tr").remove() : false;
+      } else {
+        btn.onclick = () => {
+          const row = btn.closest("tr").childNodes;
+
+          type.value = row[0].innerText;
+          date.value = row[2].innerText;
+          site.value = row[1].innerText;
+          findings.value = row[3].innerText;
+          btn.closest("tr").remove();
+          findings.style.height = findings.scrollHeight + 3 + "px";
+          AddInvModal.show();
+        };
+      }
+    });
+}
