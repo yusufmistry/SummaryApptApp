@@ -86,12 +86,12 @@ function SaveToDB() {
   // 0. Pushing the user into the object
   const UserID = document.getElementById("UserID").value;
 
-  if (UserID === "66f98451e7c85d5b786bfd98") {
-    window.alert(
-      "You cannot save or edit patients as a demo user. However you can change the inputs and generate Summaries. Please Login to save your patients"
-    );
-    return false;
-  }
+  // if (UserID === "66f98451e7c85d5b786bfd98") {
+  //   window.alert(
+  //     "You cannot save or edit patients as a demo user. However you can change the inputs and generate Summaries. Please Login to save your patients"
+  //   );
+  //   return false;
+  // }
 
   window.confirm("Save Changes to Database? (Cannot be undone!)");
 
@@ -170,28 +170,26 @@ function SaveToDB() {
 
   // 4. Pushing the checkboxes into UserInputObj
   //Neck Checkboxes
-  UserInputsObj["RNeckLNRemoved"] = $("#RNeckLNBoxes input:checked")
-    .get()
-    .map((el) => el.value);
-  UserInputsObj["RNeckStructureRemoved"] = $(
-    "#RNeckStructureBoxes input:checked"
-  )
-    .get()
-    .map((el) => el.value);
-  UserInputsObj["LNeckLNRemoved"] = $("#LNeckLNBoxes input:checked")
-    .get()
-    .map((el) => el.value);
-  UserInputsObj["LNeckStructureRemoved"] = $(
-    "#LNeckStructureBoxes input:checked"
-  )
-    .get()
-    .map((el) => el.value);
-  //NeckHPCheckBoxes
-  UserInputsObj["RInvolvedNodes"] = Array.from(document.getElementById("RInvolvedNodes").querySelectorAll("input:checked")).map(el => el.value)
-  UserInputsObj["LInvolvedNodes"] = Array.from(document.getElementById("LInvolvedNodes").querySelectorAll("input:checked")).map(el => el.value)
+  function StringifyCheckbox(checkboxid){
+    const boxesArray = []
+    const checkedboxes = document.getElementById(checkboxid).querySelectorAll("input:checked")
+    checkedboxes.forEach(box => {
+      boxesArray.push(box.value)
+    })
+    return boxesArray.join(",")
+  }
+
+  const AllCheckboxList = ["RNeckLNRemoved", "LNeckLNRemoved", "RNeckStructureRemoved", "LNeckStructureRemoved", "RInvolvedNodes", "LInvolvedNodes"]
+
+  AllCheckboxList.forEach(list => {
+    UserInputsObj[list] = StringifyCheckbox(list)
+  })
+
 
   //5. Post req using axios (Note: Check for user and update is handled by server)
   UserInputsObj["PatientID"] = document.getElementById("PatientID").value;
+
+  console.log(UserInputsObj)
 
   axios
     .post(urldevmode[0] + "", UserInputsObj)

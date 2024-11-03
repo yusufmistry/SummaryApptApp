@@ -233,16 +233,16 @@ function NeckEnabler() {
   const SameNeckDetails = document.getElementById("SameNeckDetails");
   const OppositeNeckDetails = document.getElementById("OppositeNeckDetails");
   const RNeckLNBoxes = document
-    .getElementById("RNeckLNBoxes")
+    .getElementById("RNeckLNRemoved")
     .querySelectorAll("input");
   const RNeckStructureBoxes = document
-    .getElementById("RNeckStructureBoxes")
+    .getElementById("RNeckStructureRemoved")
     .querySelectorAll("input");
   const LNeckLNBoxes = document
-    .getElementById("LNeckLNBoxes")
+    .getElementById("LNeckLNRemoved")
     .querySelectorAll("input");
   const LNeckStructureBoxes = document
-    .getElementById("LNeckStructureBoxes")
+    .getElementById("LNeckStructureRemoved")
     .querySelectorAll("input");
 
   //Hide both necks first evertime and reset onchage()
@@ -337,16 +337,16 @@ function NeckEnablerNoReset() {
   const SameNeckDetails = document.getElementById("SameNeckDetails");
   const OppositeNeckDetails = document.getElementById("OppositeNeckDetails");
   const RNeckLNBoxes = document
-    .getElementById("RNeckLNBoxes")
+    .getElementById("RNeckLNRemoved")
     .querySelectorAll("input");
   const RNeckStructureBoxes = document
-    .getElementById("RNeckStructureBoxes")
+    .getElementById("RNeckStructureRemoved")
     .querySelectorAll("input");
   const LNeckLNBoxes = document
-    .getElementById("LNeckLNBoxes")
+    .getElementById("LNeckLNRemoved")
     .querySelectorAll("input");
   const LNeckStructureBoxes = document
-    .getElementById("LNeckStructureBoxes")
+    .getElementById("LNeckStructureRemoved")
     .querySelectorAll("input");
 
   const HistopathRow = document.getElementById("HistopathRow");
@@ -402,10 +402,10 @@ function NeckEnablerNoReset() {
 RNeckExtentTagify.on("change", RNeckStrEnabler);
 function RNeckStrEnabler(e) {
   const RNeckLNBoxes = document
-    .getElementById("RNeckLNBoxes")
+    .getElementById("RNeckLNRemoved")
     .querySelectorAll("input");
   const RNeckStructureBoxes = document
-    .getElementById("RNeckStructureBoxes")
+    .getElementById("RNeckStructureRemoved")
     .querySelectorAll("input");
   if (e.detail.value) {
     RNeckLNBoxes.forEach((box) => (box.disabled = false));
@@ -425,10 +425,10 @@ function RNeckStrEnabler(e) {
 LNeckExtentTagify.on("change", LNeckStrEnabler);
 function LNeckStrEnabler(e) {
   const LNeckLNBoxes = document
-    .getElementById("LNeckLNBoxes")
+    .getElementById("LNeckLNRemoved")
     .querySelectorAll("input");
   const LNeckStructureBoxes = document
-    .getElementById("LNeckStructureBoxes")
+    .getElementById("LNeckStructureRemoved")
     .querySelectorAll("input");
   if (e.detail.value) {
     LNeckLNBoxes.forEach((box) => (box.disabled = false));
@@ -472,7 +472,6 @@ function NodeHPEnabler(side) {
     InvolvedNodesInput.forEach((input) => {
       input.disabled = true;
       input.checked = false;
-      input.value = "";
     });
     InvolvedNodesSelect.forEach((select) => {
       select.disabled = true;
@@ -536,24 +535,23 @@ function addInvestigation() {
       return Adate - Bdate;
     });
 
-    tableBody.innerHTML = "" //Reset Table first
+    tableBody.innerHTML = ""; //Reset Table first
 
     //Populate New Sorted table
     InvArray.forEach((inv) => {
-      
       const row = document.createElement("tr");
 
       const typeCell = document.createElement("td");
       typeCell.innerText = inv.type;
 
       const siteCell = document.createElement("td");
-      siteCell.innerText = inv.site
+      siteCell.innerText = inv.site;
 
       const dateCell = document.createElement("td");
       dateCell.innerText = inv.date;
 
       const findingsCell = document.createElement("td");
-      findingsCell.innerText = inv.findings
+      findingsCell.innerText = inv.findings;
 
       const deleteCell = document.createElement("td");
       deleteCell.className = "d-grid gap-1";
@@ -650,7 +648,8 @@ window.onload = function () {
 
 function PopulateForm(patient) {
   const form = document.getElementById("primaryInfo");
-  form.reset();
+  FormReset();
+  console.log(patient);
 
   //Putting the ID for update and delete purposes
   document.getElementById("PatientID").value = patient._id;
@@ -668,98 +667,100 @@ function PopulateForm(patient) {
   }
 
   //Inputting Inv Table
-
-  if (patient.InvTableRows[0]["0"] === "<") { //Backwards Compatibility
-    const tableBody = document.getElementById("InvTable");
-    const INVInnerHTML = Object.values(patient.InvTableRows[0]).join("")
-    tableBody.innerHTML = INVInnerHTML
-    
-    const date = document.getElementById("InvDate");
-    const type = document.getElementById("InvType");
-    const site = document.getElementById("InvSite");
-    const findings = document.getElementById("InvFindings");
-    const AddInvModal = bootstrap.Modal.getOrCreateInstance(
+  if(patient.InvTableRows[0]){ //Run the code only if investigations exist (if no inv then InvTableRows = [])
+    if (patient.InvTableRows[0]["0"] === "<") { //Backwards Compatibility
+      const tableBody = document.getElementById("InvTable");
+      const INVInnerHTML = Object.values(patient.InvTableRows[0]).join("")
+      tableBody.innerHTML = INVInnerHTML
+  
+      const date = document.getElementById("InvDate");
+      const type = document.getElementById("InvType");
+      const site = document.getElementById("InvSite");
+      const findings = document.getElementById("InvFindings");
+      const AddInvModal = bootstrap.Modal.getOrCreateInstance(
+        document.getElementById("AddInvModal")
+      );
+  
+      const AlldeleteBtns = tableBody.querySelectorAll("button");
+      AlldeleteBtns.forEach((btn) => {
+        btn.type = "button";
+        if (btn.textContent === "X") {
+          btn.onclick = () =>
+            confirm("Delete Investigation?") ? btn.closest("tr").remove() : false;
+        } else {
+          btn.onclick = () => {
+            const row = btn.closest("tr").childNodes;
+  
+            type.value = row[0].innerText;
+            date.value = row[2].innerText;
+            site.value = row[1].innerText;
+            findings.value = row[3].innerText;
+            btn.closest("tr").remove();
+            findings.style.height = findings.scrollHeight + 3 + "px";
+            AddInvModal.show();
+          };
+        }
+      });
+  
+    } else {
+      const date = document.getElementById("InvDate");
+      const type = document.getElementById("InvType");
+      const site = document.getElementById("InvSite");
+      const findings = document.getElementById("InvFindings");
+      const AddInvModal = bootstrap.Modal.getOrCreateInstance(
       document.getElementById("AddInvModal")
     );
-
-    const AlldeleteBtns = tableBody.querySelectorAll("button");
-    AlldeleteBtns.forEach((btn) => {
-      btn.type = "button";
-      if (btn.textContent === "X") {
-        btn.onclick = () =>
-          confirm("Delete Investigation?") ? btn.closest("tr").remove() : false;
-      } else {
-        btn.onclick = () => {
-          const row = btn.closest("tr").childNodes;
-
-          type.value = row[0].innerText;
-          date.value = row[2].innerText;
-          site.value = row[1].innerText;
-          findings.value = row[3].innerText;
-          btn.closest("tr").remove();
-          findings.style.height = findings.scrollHeight + 3 + "px";
+      const tableBody = document.getElementById("InvTable");
+  
+      patient.InvTableRows.forEach((inv) => {
+  
+        const row = document.createElement("tr");
+  
+        const typeCell = document.createElement("td");
+        typeCell.innerText = inv.type;
+  
+        const siteCell = document.createElement("td");
+        siteCell.innerText = inv.site
+  
+        const dateCell = document.createElement("td");
+        dateCell.innerText = inv.date;
+  
+        const findingsCell = document.createElement("td");
+        findingsCell.innerText = inv.findings
+  
+        const deleteCell = document.createElement("td");
+        deleteCell.className = "d-grid gap-1";
+        const editButton = document.createElement("button");
+        editButton.textContent = "✎";
+        editButton.className = "btn btn-warning btn-sm";
+        editButton.onclick = () => {
+          type.value = typeCell.innerText;
+          date.value = dateCell.innerText;
+          site.value = siteCell.innerText;
+          findings.value = findingsCell.innerText;
+          tableBody.removeChild(row);
           AddInvModal.show();
         };
-      }
-    });
-        
-  } else {
-    const date = document.getElementById("InvDate");
-    const type = document.getElementById("InvType");
-    const site = document.getElementById("InvSite");
-    const findings = document.getElementById("InvFindings");
-    const AddInvModal = bootstrap.Modal.getOrCreateInstance(
-    document.getElementById("AddInvModal")
-  );
-    const tableBody = document.getElementById("InvTable");
-
-    patient.InvTableRows.forEach((inv) => {
-      
-      const row = document.createElement("tr");
-
-      const typeCell = document.createElement("td");
-      typeCell.innerText = inv.type;
-
-      const siteCell = document.createElement("td");
-      siteCell.innerText = inv.site
-
-      const dateCell = document.createElement("td");
-      dateCell.innerText = inv.date;
-
-      const findingsCell = document.createElement("td");
-      findingsCell.innerText = inv.findings
-
-      const deleteCell = document.createElement("td");
-      deleteCell.className = "d-grid gap-1";
-      const editButton = document.createElement("button");
-      editButton.textContent = "✎";
-      editButton.className = "btn btn-warning btn-sm";
-      editButton.onclick = () => {
-        type.value = typeCell.innerText;
-        date.value = dateCell.innerText;
-        site.value = siteCell.innerText;
-        findings.value = findingsCell.innerText;
-        tableBody.removeChild(row);
-        AddInvModal.show();
-      };
-      deleteCell.appendChild(editButton);
-
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = "X";
-      deleteButton.className = "btn btn-danger btn-sm";
-      deleteButton.onclick = () =>
-        confirm("Delete Investigation?") ? tableBody.removeChild(row) : false;
-      deleteCell.appendChild(deleteButton);
-
-      row.appendChild(typeCell);
-      row.appendChild(siteCell);
-      row.appendChild(dateCell);
-      row.appendChild(findingsCell);
-      row.appendChild(deleteCell);
-      tableBody.appendChild(row);
-    });
-
+        deleteCell.appendChild(editButton);
+  
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "X";
+        deleteButton.className = "btn btn-danger btn-sm";
+        deleteButton.onclick = () =>
+          confirm("Delete Investigation?") ? tableBody.removeChild(row) : false;
+        deleteCell.appendChild(deleteButton);
+  
+        row.appendChild(typeCell);
+        row.appendChild(siteCell);
+        row.appendChild(dateCell);
+        row.appendChild(findingsCell);
+        row.appendChild(deleteCell);
+        tableBody.appendChild(row);
+      });
+    }
   }
+
+  
 
   //Inputting Tagifys
 
@@ -777,24 +778,49 @@ function PopulateForm(patient) {
   ReconTypeTagify.addTags(patient.ReconType);
 
   //Checking Boxes
-  patient.RNeckLNRemoved.forEach((checkbox) => {
-    document.getElementById(`R${checkbox}`).checked = true;
-  });
-  patient.RNeckStructureRemoved.forEach((checkbox) => {
-    document.getElementById(`R${checkbox}`).checked = true;
-  });
-  patient.LNeckStructureRemoved.forEach((checkbox) => {
-    document.getElementById(`L${checkbox}`).checked = true;
-  });
-  patient.LNeckLNRemoved.forEach((checkbox) => {
-    document.getElementById(`L${checkbox}`).checked = true;
-  });
-  patient.RInvolvedNodes.forEach((checkbox) => {
-    document.getElementById(`RHP${checkbox}`).checked = true;
-  });
-  patient.LInvolvedNodes.forEach((checkbox) => {
-    document.getElementById(`LHP${checkbox}`).checked = true;
-  });
+
+  if (patient.RNeckLNRemoved) {
+    const RNeckLNRemovedArray = patient.RNeckLNRemoved.split(",");
+    RNeckLNRemovedArray.forEach((box) => {
+      document.getElementById(`R${box}`).checked = true;
+    });
+  }
+
+  if (patient.LNeckLNRemoved) {
+    const LNeckLNRemovedArray = patient.LNeckLNRemoved.split(",");
+    LNeckLNRemovedArray.forEach((box) => {
+      document.getElementById(`L${box}`).checked = true;
+    });
+  }
+
+  if (patient.RNeckStructureRemoved) {
+    const RNeckStructureRemovedArray = patient.RNeckStructureRemoved.split(",");
+    RNeckStructureRemovedArray.forEach((box) => {
+      document.getElementById(`R${box}`).checked = true;
+    });
+  }
+
+  if (patient.LNeckStructureRemoved) {
+    const LNeckStructureRemovedArray = patient.LNeckStructureRemoved.split(",");
+    LNeckStructureRemovedArray.forEach((box) => {
+      document.getElementById(`L${box}`).checked = true;
+    });
+  }
+
+  if (patient.RInvolvedNodes) {
+    const RInvolvedNodesArray = patient.RInvolvedNodes.split(",");
+    RInvolvedNodesArray.forEach((box) => {
+      document.getElementById(`RHP${box}`).checked = true;
+    });
+  }
+
+  if (patient.LInvolvedNodes) {
+    const LInvolvedNodesArray = patient.LInvolvedNodes.split(",");
+    LInvolvedNodesArray.forEach((box) => {
+      document.getElementById(`LHP${box}`).checked = true;
+    });
+  }
+
 
   //Expanding inputs and enabling btns
   FirstVisitEnabler();

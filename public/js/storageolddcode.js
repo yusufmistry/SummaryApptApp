@@ -352,3 +352,47 @@ function AddfunctionalitytoEditDeleteButtonofInvTable(){
       }
     });
 }
+
+
+function gettingcheckboxes(){
+  UserInputsObj["RNeckLNRemoved"] = $("#RNeckLNBoxes input:checked")
+    .get()
+    .map((el) => el.value);
+  UserInputsObj["RNeckStructureRemoved"] = $(
+    "#RNeckStructureBoxes input:checked"
+  )
+    .get()
+    .map((el) => el.value);
+  UserInputsObj["LNeckLNRemoved"] = $("#LNeckLNBoxes input:checked")
+    .get()
+    .map((el) => el.value);
+  UserInputsObj["LNeckStructureRemoved"] = $(
+    "#LNeckStructureBoxes input:checked"
+  )
+    .get()
+    .map((el) => el.value);
+  //NeckHPCheckBoxes
+  UserInputsObj["RInvolvedNodes"] = Array.from(document.getElementById("RInvolvedNodes").querySelectorAll("input:checked")).map(el => el.value)
+  UserInputsObj["LInvolvedNodes"] = Array.from(document.getElementById("LInvolvedNodes").querySelectorAll("input:checked")).map(el => el.value)
+}
+
+function oldcheckboxescode(){
+  patient.RNeckLNRemoved.forEach((checkbox) => {
+    document.getElementById(`R${checkbox}`).checked = true;
+  });
+  patient.RNeckStructureRemoved.forEach((checkbox) => {
+    document.getElementById(`R${checkbox}`).checked = true;
+  });
+  patient.LNeckStructureRemoved.forEach((checkbox) => {
+    document.getElementById(`L${checkbox}`).checked = true;
+  });
+  patient.LNeckLNRemoved.forEach((checkbox) => {
+    document.getElementById(`L${checkbox}`).checked = true;
+  });
+  patient.RInvolvedNodes.forEach((checkbox) => {
+    document.getElementById(`RHP${checkbox}`).checked = true;
+  });
+  patient.LInvolvedNodes.forEach((checkbox) => {
+    document.getElementById(`LHP${checkbox}`).checked = true;
+  });
+}

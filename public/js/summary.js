@@ -175,19 +175,19 @@ function genSummary() {
   const ReconType = ReconTypeTagify;
 
   //Neck Checkboxes
-  const RNeckLNRemovedStr = $("#RNeckLNBoxes input:checked")
+  const RNeckLNRemovedStr = $("#RNeckLNRemoved input:checked")
     .get()
     .map((el) => el.value)
     .join(", ");
-  const RNeckStructureRemovedStr = $("#RNeckStructureBoxes input:checked")
+  const RNeckStructureRemovedStr = $("#RNeckStructureRemoved input:checked")
     .get()
     .map((el) => el.value)
     .join(", ");
-  const LNeckLNRemovedStr = $("#LNeckLNBoxes input:checked")
+  const LNeckLNRemovedStr = $("#LNeckLNRemoved input:checked")
     .get()
     .map((el) => el.value)
     .join(", ");
-  const LNeckStructureRemovedStr = $("#LNeckStructureBoxes input:checked")
+  const LNeckStructureRemovedStr = $("#LNeckStructureRemoved input:checked")
     .get()
     .map((el) => el.value)
     .join(", ");
