@@ -86,12 +86,12 @@ function SaveToDB() {
   // 0. Pushing the user into the object
   const UserID = document.getElementById("UserID").value;
 
-  // if (UserID === "66f98451e7c85d5b786bfd98") {
-  //   window.alert(
-  //     "You cannot save or edit patients as a demo user. However you can change the inputs and generate Summaries. Please Login to save your patients"
-  //   );
-  //   return false;
-  // }
+  if (UserID === "66f98451e7c85d5b786bfd98") {
+    window.alert(
+      "You cannot save or edit patients as a demo user. However you can change the inputs and generate Summaries. Please Login to save your patients"
+    );
+    return false;
+  }
 
   window.confirm("Save Changes to Database? (Cannot be undone!)");
 
