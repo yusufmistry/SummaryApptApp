@@ -83,11 +83,22 @@ app.post("/changesign", (req, res) => {
 //Get Patient List
 app.post("/patientlist", (req, res) => {
   const UserIDObj = req.body;
-  const { userid } = UserIDObj;
+  const { userid, searchTerm } = UserIDObj;
 
-  Patient.find({ user: userid }).sort({ updatedAt: -1 })
+  if (searchTerm){
+    Patient.find({ user: userid, $or: [
+      {patientName: { $regex: searchTerm, $options: 'i' }},
+      {Diagnosis: { $regex: searchTerm, $options: 'i' }}
+    ]}).limit(10).sort({ updatedAt: -1 })
     .then((patients) => res.send(patients))
     .catch((err) => console.log(err));
+  } else {
+    Patient.find({ user: userid }).limit(10).sort({ updatedAt: -1 })
+    .then((patients) => res.send(patients))
+    .catch((err) => console.log(err));
+  }
+
+  
 });
 
 // Save or Update Patient to Database

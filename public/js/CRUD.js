@@ -1,5 +1,5 @@
 ////////////////////////// Get Patient List ///////////////////
-function GetPatientList() {
+function GetPatientList(input) {
   const PatientNameList = document.getElementById("PatientNameList");
   window.scrollTo({ top: 0, behavior: "smooth" });
   const spinner = document.getElementById("spinner");
@@ -8,7 +8,7 @@ function GetPatientList() {
   if (PatientNameList.innerText === "") {
     spinner.hidden = false;
     const UserID = document.getElementById("UserID").value;
-    const UserIDObj = { userid: UserID };
+    const UserIDObj = { userid: UserID, searchTerm: input };
 
     axios
       .post(urldevmode[0] + "patientlist", UserIDObj)
@@ -76,6 +76,20 @@ function GetPatientList() {
       })
       .catch((err) => console.log(err));
   }
+}
+
+//////////////////////// GetSearchNames /////////////////////////////////////
+function GetSearchNames(input){
+
+  if (input.value.length >= 3){
+    const PatientNameList = document.getElementById("PatientNameList");
+    PatientNameList.innerHTML = ""
+    GetPatientList(input.value)  
+  } else if (input.value.length === 0){
+    PatientNameList.innerHTML = ""
+    GetPatientList()
+  }
+  
 }
 
 //////////////////////// Save Patient  //////////////////////////////////////
