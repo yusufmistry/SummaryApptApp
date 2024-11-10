@@ -6,7 +6,7 @@
     <title>Summary Maker App</title>
 
     <!-- Mainfest.JSON -->
-     <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" />
 
     <!-- Bootstrap CSS -->
     <link
@@ -19,7 +19,11 @@
     <!-- Tagify -->
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css"
+      rel="stylesheet"
+      type="text/css"
+    />
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -374,23 +378,28 @@
     >
       <div class="row border rounded-5 bg-light p-3">
         <div class="col-sm-12">
-          <h3 class="text-center align-bottom border-bottom clearfix pb-2">Patient List
+          <h3 class="text-center align-bottom border-bottom clearfix pb-2">
+            Patient List
             <!-- Search Bar -->
             <form class="me-3 float-end w-20" role="search">
-              <input type="search" class="form-control" placeholder="Search..." aria-label="Search" oninput="GetSearchNames(this)">
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Search..."
+                aria-label="Search"
+                oninput="GetSearchNames(this)"
+              />
             </form>
-          </h3>          
+          </h3>
           <input
             type="text"
             id="UserID"
             value="66f98451e7c85d5b786bfd98"
             hidden
           />
-          <textarea
-            type="text"
-            id="UserSign" 
-            hidden
-          >Dr. John Doe (MS, MD)<br>Consultant Head and Neck Surgeon<br>Life Care Hospital<br>johndoe@gmail.com</textarea>
+          <textarea type="text" id="UserSign" hidden>
+Dr. John Doe (MS, MD)<br>Consultant Head and Neck Surgeon<br>Life Care Hospital<br>johndoe@gmail.com</textarea
+          >
           <div class="spinner-border" id="spinner" role="status" hidden></div>
           <table class="table table-hover table-sm table-bordered">
             <thead class="text-center">
@@ -2636,14 +2645,57 @@
           ></div>
 
           <!-- Gen Summary Btn -->
-          <button
-            type="button"
-            id="genSummaryBtn"
-            class="btn btn-primary mb-2"
-            onclick="genSummary()"
-          >
-            Generate Summary
-          </button>
+          <div class="btn-group">
+            <button
+              type="button"
+              id="genSummaryBtn"
+              class="btn btn-primary mb-2"
+              onclick="genSummary()"
+            >
+              Generate Summary
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary dropdown-toggle dropdown-toggle-split mb-2"
+              style="max-width: 50px"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <button
+                  type="button"
+                  id="genSummaryBtn"
+                  class="dropdown-item btn btn-primary"
+                  onclick="genReferral('Radiation Oncologist')"
+                >
+                  Radiation Oncologist Referral Letter
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  id="genSummaryBtn"
+                  class="dropdown-item btn btn-primary"
+                  onclick="genReferral('Medical Oncologist')"
+                >
+                  Medical Oncologist Referral Letter
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  id="genSummaryBtn"
+                  class="dropdown-item btn btn-primary"
+                  onclick="genReferral('Radiation & Medical Oncologist')"
+                >
+                  Rad + Med Oncologist Referral Letter
+                </button>
+              </li>
+            </ul>
+          </div>
 
           <!-- Save to DB Btn -->
           <button
@@ -2671,7 +2723,8 @@
 
       <!-- Not enough info Div -->
       <div id="not-enough-info" class="text-center text-danger">
-        There is not enough data to make a summary
+        There is insufficient data to generate a reasonable summary or referral
+        letter
       </div>
 
       <div class="col-sm-12">
@@ -2680,13 +2733,15 @@
           style="font-size: 14px; font-family: 'Times New Roman', Times, serif"
           id="SummaryContent"
         >
-          <h5 style="text-align: center; font-size: 18px;"><u>CASE SUMMARY</u></h5>
 
           <!-- 0. Todays Date Div-->
-          <div id="TodaysDateDiv" style="text-align: right; margin-bottom: 50px;"></div>
+          <div
+            id="TodaysDateDiv"
+            style="text-align: right; margin-bottom: 50px"
+          ></div>
 
           <!-- 1. Primary Info Summary Div -->
-          <div id="primaryInfoSummaryDiv" style="margin-bottom: 40px;"></div>
+          <div id="primaryInfoSummaryDiv" style="margin-bottom: 40px"></div>
 
           <!-- 2. First Visit Summary Div -->
           <div id="FVSummaryDiv" class="mb-2"></div>
@@ -2707,14 +2762,24 @@
           <div id="SubsequentSummaryDiv" class="mb-2"></div>
 
           <!-- 7. Contact Info and Signature Summary Div -->
-          <div id="SignSummaryDiv" style="text-align: right; margin-top: 50;" title="To edit go to the side-menu and click on 'Update User'"></div>
-
+          <div
+            id="SignSummaryDiv"
+            style="text-align: right; margin-top: 50"
+            title="To edit go to the side-menu and click on 'Update User'"
+          ></div>
         </div>
         <!-- Download as Docx, PDF, Print Btns -->
-        <div id="SavePrintDiv" style="display: flex; justify-content: center; margin: 20px;">
-          <button type="button" style="margin: 0 10px;" onclick="SaveAsDocx()">Save as .docx</button>
-          <button type="button" style="margin: 0 10px;" onclick="printSummary()">Print</button>
-         </div>
+        <div
+          id="SavePrintDiv"
+          style="display: flex; justify-content: center; margin: 20px"
+        >
+          <button type="button" style="margin: 0 10px" onclick="SaveAsDocx()">
+            Save as .docx
+          </button>
+          <button type="button" style="margin: 0 10px" onclick="printSummary()">
+            Print
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2975,8 +3040,7 @@
                     Consultant Head Neck Surgeon
                     Life Care Hospital
                     drjohndoe@gmail.com"
-                  ></textarea
-                  >
+                  ></textarea>
                   <div class="form-text" style="font-size: 0.7rem">
                     <i
                       >Please Change your Name, Designations and Sign the way
@@ -3121,7 +3185,7 @@
     </footer>
 
     <!-------------------------------------------------Scripts & CDN ------------------------------------------->
-    
+
     <!-- Datalists.js -->
     <script src="js/datalists.js"></script>
     <!-- Tagifys.js -->
@@ -3132,11 +3196,18 @@
     <script src="js/tnmlogic.js"></script>
     <!-- Summary Script -->
     <script src="js/summary.js"></script>
+    <!-- Referral Letter Script -->
+    <script src="js/referral.js"></script>
     <!-- CRUD Script -->
     <script src="js/CRUD.js"></script>
 
     <!-- Filesaver JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"
+      integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
 
     <!-- Bootstrap Script -->
     <script
