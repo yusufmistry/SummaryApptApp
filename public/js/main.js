@@ -999,3 +999,33 @@ function printSummary() {
     printWindow.close();
   };
 }
+
+
+////////////////////////// Install Prompt ///////////////////////////////////////////////////////
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  // Save the event so it can be triggered later
+  deferredPrompt = event;
+});
+
+function InstallApp(){
+  // Show the install prompt
+  deferredPrompt.prompt();
+
+  // Wait for the user to respond to the prompt
+  deferredPrompt.userChoice.then((choiceResult) => {
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    deferredPrompt = null;
+  });
+}
+
+// Optional: Add other logic to check if the app is already installed
+window.addEventListener('appinstalled', () => {
+  console.log('PWA was installed');
+});
+

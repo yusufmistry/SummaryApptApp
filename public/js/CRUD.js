@@ -313,10 +313,16 @@ function Register() {
           loginlogout.appendChild(LogoutBtn);
 
           const ChangeSignBtn = document.createElement("button");
-          ChangeSignBtn.className = "btn btn-link btn-sm float-end";
-          ChangeSignBtn.textContent = "Update User Sign";
+          ChangeSignBtn.className = "btn btn-link btn-sm";
+          ChangeSignBtn.textContent = "Update User Details";
           ChangeSignBtn.onclick = () => GetSign();
           loginlogout.appendChild(ChangeSignBtn);
+
+          const InstallBtn = document.createElement("button");
+          InstallBtn.className = "btn btn-link btn-sm";
+          InstallBtn.textContent = "Install App on Device";
+          InstallBtn.onclick = () => InstallApp();
+          loginlogout.appendChild(InstallBtn);
 
           // 4. Hide register modal and reset form
           const RegisterModal = bootstrap.Modal.getInstance("#RegisterModal");
@@ -410,6 +416,12 @@ function Login() {
           ChangeSignBtn.textContent = "Update User Sign";
           ChangeSignBtn.onclick = () => GetSign();
           loginlogout.appendChild(ChangeSignBtn);
+
+          const InstallBtn = document.createElement("button");
+          InstallBtn.className = "btn btn-link btn-sm";
+          InstallBtn.textContent = "Install App on Device";
+          InstallBtn.onclick = () => InstallApp();
+          loginlogout.appendChild(InstallBtn);
 
           // 5. Successfully registered toast
           LoginSuccessMsg = document.getElementById(
