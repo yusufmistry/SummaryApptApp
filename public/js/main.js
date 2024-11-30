@@ -978,26 +978,22 @@ function printSummary() {
   const printWindow = window.open("", "", "height=1754px,width=1240px");
 
   // Add HTML and CSS styling for the print window
-  printWindow.document.write("<html><head><title>Case Summary</title>");
   printWindow.document.write(
-    '<style>body { font-size: 14px; font-family: "Times New Roman", Times, serif; padding: 100 50 0 50}</style>'
-  );
-  printWindow.document.write("</head><body>");
-
-  // Add the content to the print window
-  printWindow.document.write(summary);
-  printWindow.document.write("</body></html>");
-
-  // Close the document to apply styles
-  printWindow.document.close();
-
-  // Trigger the print dialog
-  printWindow.print();
-
-  // Close the print window after printing
-  printWindow.onafterprint = function () {
-    printWindow.close();
-  };
+    `<html>
+      <head>
+       <title>Case Summary</title>
+       <style>body { font-size: 14px; font-family: "Times New Roman", Times, serif; padding: 100 50 0 50}</style>
+      </head>
+      <body onclick='printpage()'>
+        ${summary}
+      </body>
+      <script type="text/javascript" language="javascript">
+        function printpage() {
+            window.print();
+            window.focus();
+        }
+      </script>
+      </html>`);
 }
 
 
